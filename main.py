@@ -121,10 +121,10 @@ def catcher(driver):
                 pokeball.click()
                 print('catched')
                 flag = False
-            except:
+            except Exception as e:
                 time.sleep(1)
                 count += 1
-                print(f'retry {count}')
+                print(f'retry {count}, {e}')
 
         time.sleep(5)
         respond = driver.find_elements_by_class_name('contents-2mQqc9')[-1].text
