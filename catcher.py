@@ -4,7 +4,7 @@ driver = open_driver()
 
 count = 0
 while True:
-    if count % 30 == 0:
+    if count % 20 == 0:
         flag = True
         while flag:
             try:
