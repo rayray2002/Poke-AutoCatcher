@@ -4,6 +4,8 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import time
+import re
+import os
 
 
 def open_driver():
@@ -13,9 +15,10 @@ def open_driver():
     options.add_argument("--disable-extensions")
     try:
         driver = webdriver.Chrome(options=options, executable_path='./chromedriver')
+        driver.get("https://discord.com/channels/878300201541062656/878302161749033021")
     except:
         driver = webdriver.Chrome(options=options, executable_path='./chromedriver.exe')
-    driver.get("https://discord.com/channels/878300201541062656/878302161749033021")
+        driver.get('https://discord.com/channels/878300201541062656/879602635194384424')
 
     try:
         wait = WebDriverWait(driver, 60).until(EC.presence_of_element_located(
@@ -86,15 +89,78 @@ def catcher(driver, count):
         time.sleep(3)
 
 
+def find_last(driver):
+    text = driver.find_elements_by_class_name('embedDescription-1Cuq9a')[-1].text
+    # print(text.split('\n'))
+    return len(text.split('\n'))
+
+
+def get_name(driver):
+    text = driver.find_elements_by_class_name('embedDescription-1Cuq9a')[-1].text
+    m = re.search(r'(.*) \((.*)\) \(CP: (.*)\)', text)
+    name = m.group(1).strip()
+    rarity = m.group(2).strip()
+    CP = int(m.group(3).strip())
+    return name, rarity, CP
+
+
+def wondertrade(driver):
+    max_level = False
+    while True:
+        send_message(driver, '!!wondertrade')
+        time.sleep(1)
+        send_message(driver, '1')
+        time.sleep(1)
+        name, rarity, CP = get_name(driver)
+        print(name, rarity, CP)
+
+        if rarity == 'Legendary':
+            send_message(driver, f'!!info {name}')
+            os.system('say "catched Legendary pokemon"')
+
+            return
+        elif rarity == 'Rare' or CP >= 1500:
+            os.system('say "catched rare pokemon"')
+            send_message(driver, f'!!info {name}')
+            time.sleep(10)
+
+        while True and not max_level:
+            send_message(driver, f'!!powerup {name}')
+            time.sleep(1)
+            last = find_last(driver)
+            while last >= 16:
+                next = driver.find_elements_by_class_name('reactionInner-15NvIl')[-1]
+                time.sleep(3)
+                next.click()
+                time.sleep(2)
+                last = find_last(driver)
+
+            send_message(driver, str(last))
+            time.sleep(1)
+            respond = driver.find_elements_by_class_name('contents-2mQqc9')[-1].text
+            if 'you do not have enough candy' in respond:
+                break
+            elif 'cannot powerup any' in respond:
+                max_level = True
+                break
+
+        send_message(driver, f'!!fortrade add {name}')
+        time.sleep(1)
+        send_message(driver, str(find_last(driver)))
+
+
 if __name__ == '__main__':
     driver = open_driver()
 
-    count = 0
-    while True:
-        if count % 60 == 0:
-            try:
-                catcher(driver, 15)
-            except Exception as e:
-                print(e)
-        time.sleep(60)
-        count += 1
+    wondertrade(driver)
+    driver.quit()
+    # count = 0
+    # while True:
+    #     if count % 60 == 0:
+    #         try:
+    #             catcher(driver, 15)
+    #         except Exception as e:
+    #             print(e)
+    #     time.sleep(60)
+    #     count += 1
+    #     print(count)
