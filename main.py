@@ -74,7 +74,32 @@ def send_message(driver, text):
     text_box.send_keys(Keys.ENTER)
 
 
+def bag_check(driver):
+    send_message(driver, '!!bag')
+    wait_bot(driver)
+    bag = driver.find_elements_by_class_name('embedDescription-1Cuq9a')[-1]
+    m = re.findall(r'x(\d*) ', bag)
+    if int(m[0]) < 10:
+        send_message(driver, '!!buy poke ball 10')
+        print('buy poke ball 10')
+        wait_bot(driver)
+    if int(m[1]) < 10:
+        send_message(driver, '!!buy great ball 10')
+        print('buy great ball 10')
+        wait_bot(driver)
+    if int(m[2]) < 10:
+        send_message(driver, '!!buy ultra ball 10')
+        print('buy ultra ball 10')
+        wait_bot(driver)
+    if int(m[2]) < 1:
+        send_message(driver, '!!buy master ball 1')
+        print('buy master ball')
+        wait_bot(driver)
+    print('bag checked')
+
+
 def catcher(driver):
+    bag_check(driver)
     send_message(driver, '!!pokestop')
     time.sleep(2)
 
@@ -124,7 +149,7 @@ def wait_bot(driver):
     author = driver.find_elements_by_class_name('headerText-3Uvj1Y')[-1].text
     while 'Poké Catcher' not in author:
         author = driver.find_elements_by_class_name('headerText-3Uvj1Y')[-1].text
-        time.sleep(0.5)
+        time.sleep(1)
 
 
 def wondertrade(driver):
