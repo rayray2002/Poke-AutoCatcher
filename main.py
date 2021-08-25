@@ -82,7 +82,7 @@ def catcher(driver):
         send_message(driver, '!!p')
         wait_bot(driver)
         print('new pokemon')
-        time.sleep(2)
+        time.sleep(3)
 
         flag = True
         count = 0
