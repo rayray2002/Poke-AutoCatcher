@@ -176,7 +176,7 @@ def wondertrade(driver):
             send_message(driver, f'!!powerup {name}')
             wait_bot(driver)
             last = find_last(driver)
-            while last >= 16:
+            while last >= 25:
                 next = driver.find_elements_by_class_name('reactionInner-15NvIl')[-1]
                 time.sleep(3)
                 next.click()
