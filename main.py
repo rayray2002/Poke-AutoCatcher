@@ -8,7 +8,7 @@ import re
 import os
 
 
-def open_driver():
+def open_driver(auto=False):
     options = webdriver.ChromeOptions()
     options.add_argument("start-maximized")
     options.add_argument("disable-infobars")
@@ -19,6 +19,9 @@ def open_driver():
     except:
         driver = webdriver.Chrome(options=options, executable_path='./chromedriver.exe')
         driver.get('https://discord.com/channels/878300201541062656/879602635194384424')
+
+    if auto:
+        login_by_txt(driver)
 
     try:
         wait = WebDriverWait(driver, 60).until(EC.presence_of_element_located(
@@ -71,22 +74,24 @@ def send_message(driver, text):
     text_box.send_keys(Keys.ENTER)
 
 
-def catcher(driver, count):
+def catcher(driver):
     send_message(driver, '!!pokestop')
     time.sleep(2)
 
-    for i in range(count):
+    while True:
         send_message(driver, '!!p')
+        wait_bot(driver)
         time.sleep(3)
 
         pokeball = driver.find_elements_by_class_name('reactionInner-15NvIl')[-2]
-        t = time.time()
-        while pokeball.get_attribute("aria-pressed") == 'true' and time.time() - t < 10:
-            pokeball = driver.find_elements_by_class_name('reactionInner-15NvIl')[-2]
         time.sleep(3)
 
         pokeball.click()
         time.sleep(3)
+        respond = driver.find_elements_by_class_name('contents-2mQqc9')[-1].text
+        if 'no rolls left' in respond:
+            print('no rolls left')
+            break
 
 
 def find_last(driver):
@@ -104,11 +109,19 @@ def get_name(driver):
     return name, rarity, CP
 
 
+def wait_bot(driver):
+    time.sleep(1)
+    author = driver.find_elements_by_class_name('headerText-3Uvj1Y')[-1].text
+    while 'Poké Catcher' not in author:
+        author = driver.find_elements_by_class_name('headerText-3Uvj1Y')[-1].text
+        time.sleep(0.5)
+
+
 def wondertrade(driver):
     max_level = False
     while True:
         send_message(driver, '!!wondertrade')
-        time.sleep(1)
+        wait_bot(driver)
         send_message(driver, '1')
         time.sleep(1)
         name, rarity, CP = get_name(driver)
@@ -116,17 +129,17 @@ def wondertrade(driver):
 
         if rarity == 'Legendary':
             send_message(driver, f'!!info {name}')
-            os.system('say "catched Legendary pokemon"')
+            os.system('say "catched Legendary"')
 
             return
         elif rarity == 'Rare' or CP >= 1500:
-            os.system('say "catched rare pokemon"')
+            os.system('say "catched rare"')
             send_message(driver, f'!!info {name}')
             time.sleep(10)
 
         while True and not max_level:
             send_message(driver, f'!!powerup {name}')
-            time.sleep(1)
+            wait_bot(driver)
             last = find_last(driver)
             while last >= 16:
                 next = driver.find_elements_by_class_name('reactionInner-15NvIl')[-1]
@@ -136,7 +149,7 @@ def wondertrade(driver):
                 last = find_last(driver)
 
             send_message(driver, str(last))
-            time.sleep(1)
+            wait_bot(driver)
             respond = driver.find_elements_by_class_name('contents-2mQqc9')[-1].text
             if 'you do not have enough candy' in respond:
                 break
@@ -146,6 +159,7 @@ def wondertrade(driver):
 
         send_message(driver, f'!!fortrade add {name}')
         time.sleep(1)
+        wait_bot(driver)
         send_message(driver, str(find_last(driver)))
 
 
@@ -154,4 +168,3 @@ if __name__ == '__main__':
 
     wondertrade(driver)
     driver.quit()
-
