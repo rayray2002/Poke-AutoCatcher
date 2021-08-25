@@ -11,7 +11,10 @@ def open_driver():
     options.add_argument("start-maximized")
     options.add_argument("disable-infobars")
     options.add_argument("--disable-extensions")
-    driver = webdriver.Chrome(options=options, executable_path='./chromedriver')
+    try:
+        driver = webdriver.Chrome(options=options, executable_path='./chromedriver')
+    except:
+        driver = webdriver.Chrome(options=options, executable_path='./chromedriver.exe')
     driver.get("https://discord.com/channels/878300201541062656/878302161749033021")
 
     try:
