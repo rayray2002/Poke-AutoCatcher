@@ -86,7 +86,7 @@ def catcher(driver):
 
         flag = True
         count = 0
-        while flag or count < 10:
+        while flag and count < 10:
             try:
                 pokeball = driver.find_elements_by_class_name('reactionInner-15NvIl')[-2]
                 pokeball.click()
