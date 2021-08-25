@@ -81,13 +81,23 @@ def catcher(driver):
     while True:
         send_message(driver, '!!p')
         wait_bot(driver)
-        time.sleep(3)
+        print('new pokemon')
+        time.sleep(2)
 
-        pokeball = driver.find_elements_by_class_name('reactionInner-15NvIl')[-2]
-        time.sleep(3)
+        flag = True
+        count = 0
+        while flag or count < 10:
+            try:
+                pokeball = driver.find_elements_by_class_name('reactionInner-15NvIl')[-2]
+                pokeball.click()
+                print('catched')
+                flag = False
+            except:
+                time.sleep(1)
+                count += 1
+                print(f'retry {count}')
 
-        pokeball.click()
-        time.sleep(3)
+        time.sleep(5)
         respond = driver.find_elements_by_class_name('contents-2mQqc9')[-1].text
         if 'no rolls left' in respond:
             print('no rolls left')
