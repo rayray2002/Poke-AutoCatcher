@@ -99,7 +99,7 @@ def bag_check(driver):
 
 
 def catcher(driver):
-    bag_check(driver)
+    # bag_check(driver)
     send_message(driver, '!!pokestop')
     time.sleep(2)
 
