@@ -128,7 +128,7 @@ def catcher(driver):
 
         time.sleep(5)
         respond = driver.find_elements_by_class_name('contents-2mQqc9')[-1].text
-        if 'no rolls left' in respond:
+        if 'no rolls left' in respond or 'Bot Traffic' in respond:
             print('no rolls left')
             break
 
