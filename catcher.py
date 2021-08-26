@@ -18,7 +18,7 @@ while True:
                 flag = False
             except Exception as e:
                 print(e)
-
+    driver.refresh()
     time.sleep(60)
     count += 1
     print(count)

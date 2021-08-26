@@ -141,8 +141,13 @@ def find_last(driver):
 
 
 def get_name(driver):
-    text = driver.find_elements_by_class_name('embedDescription-1Cuq9a')[-1].text
-    m = re.search(r'(.*) \((.*)\) \(CP: (.*)\)', text)
+    try:
+        text = driver.find_elements_by_class_name('embedDescription-1Cuq9a')[-1].text
+        m = re.search(r'(.*) \((.*)\) \(CP: (.*)\)', text)
+    except:
+        time.sleep(1)
+        text = driver.find_elements_by_class_name('embedDescription-1Cuq9a')[-1].text
+        m = re.search(r'(.*) \((.*)\) \(CP: (.*)\)', text)
     name = m.group(1).strip()
     rarity = m.group(2).strip()
     CP = int(m.group(3).strip())
@@ -179,12 +184,21 @@ def wondertrade(driver):
             wait_bot(driver)
             info = driver.find_elements_by_class_name('embedDescription-1Cuq9a')[-1].text
             evolve = re.search(r'Evolves into: (.*)', info).group(1)
-            while name != 'None':
+            while evolve != 'None':
                 send_message(driver, f'!!info {evolve}')
                 wait_bot(driver)
                 info = driver.find_elements_by_class_name('embedDescription-1Cuq9a')[-1].text
                 evolve = re.search(r'Evolves into: (.*)', info).group(1)
-            time.sleep(10)
+            send_message(driver, f'!!info mega {evolve}')
+            wait_bot(driver)
+            send_message(driver, f'!!info {evolve} gmax')
+            wait_bot(driver)
+            info = driver.find_elements_by_class_name('embedDescription-1Cuq9a')[-1].text
+            max_cp = re.search(r'Max CP: (.*)', info).group(1)
+            if int(max_cp) > 2000:
+                for i in range(10):
+                    os.system(f'say "{10 - i}"')
+                    time.sleep(1)
 
         while True and not max_level:
             send_message(driver, f'!!powerup {name}')
@@ -198,7 +212,7 @@ def wondertrade(driver):
                 last = find_last(driver)
 
             send_message(driver, str(last))
-            wait_bot(driver)
+            time.sleep(1)
             respond = driver.find_elements_by_class_name('contents-2mQqc9')[-1].text
             if 'you do not have enough candy' in respond:
                 break
