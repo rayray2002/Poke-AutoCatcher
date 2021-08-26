@@ -1,7 +1,5 @@
 from main import *
 
-driver = open_driver()
-
-wondertrade(driver)
-
-driver.quit()
+autoCatcher = AutoCatcher()
+autoCatcher.wondertrade()
+autoCatcher.driver.quit()
