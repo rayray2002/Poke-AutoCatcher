@@ -22,8 +22,9 @@ class AutoCatcher:
 
         self.driver = webdriver.Chrome(options=options, executable_path=self.config['default']['driver_path'])
         self.driver.get("https://discord.com/channels/878300201541062656/878302161749033021")
+        self.driver.fullscreen_window()
 
-        if self.config['default']['auto_login']:
+        if int(self.config['default']['auto_login']):
             self.login_by_txt()
 
         try:
@@ -32,6 +33,13 @@ class AutoCatcher:
                  '//*[@id="app-mount"]/div[2]/div/div[2]/div/div/div/div/div[2]/div[2]/main/form/div[1]/div/div/div[1]/div/div[3]/div[2]/div')))
         except Exception as e:
             print(e)
+
+        time.sleep(2)
+        try:
+            close = self.driver.find_element_by_class_name('close-relY5R')
+            close.click()
+        except Exception as e:
+            print('no close button', e)
 
         time.sleep(2)
         channel = self.driver.find_element_by_link_text(self.config['default']['channel'])

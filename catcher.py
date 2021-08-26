@@ -1,10 +1,12 @@
 from main import *
+import datetime
 
 autoCatcher = AutoCatcher()
 
-count = 0
+run_minutes = autoCatcher.config['catcher']['run_minutes'].split(',')
 while True:
-    if count % 30 == 0:
+    if str(datetime.datetime.now().minute) in run_minutes:
+        autoCatcher.send_message('run')
         flag = True
         while flag:
             try:
@@ -13,9 +15,5 @@ while True:
             except Exception as e:
                 print(e)
         autoCatcher.driver.refresh()
-    elif count % 5 == 0:
-        autoCatcher.send_message(str(count % 30))
-
     time.sleep(60)
-    count += 1
-    print(count)
+    print(datetime.datetime.now().minute)
