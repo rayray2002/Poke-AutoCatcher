@@ -13,7 +13,7 @@ class AutoCatcher:
 
     def __init__(self):
         self.config = configparser.ConfigParser()
-        self.config.read('config.ini')
+        self.config.read('config.ini', 'utf8')
 
         options = webdriver.ChromeOptions()
         options.add_argument("start-maximized")
