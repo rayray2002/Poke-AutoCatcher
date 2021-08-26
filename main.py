@@ -21,7 +21,7 @@ class AutoCatcher:
         options.add_argument("--disable-extensions")
 
         self.driver = webdriver.Chrome(options=options, executable_path=self.config['default']['driver_path'])
-        self.driver.get("https://discord.com/channels/878300201541062656/878302161749033021")
+        self.driver.get(self.config['default']['server_url'])
         self.driver.maximize_window()
 
         if int(self.config['default']['auto_login']):

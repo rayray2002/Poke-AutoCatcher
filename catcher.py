@@ -15,5 +15,5 @@ while True:
             except Exception as e:
                 print(e)
         autoCatcher.driver.refresh()
-    time.sleep(60)
+    time.sleep(10)
     print(datetime.datetime.now().minute)
