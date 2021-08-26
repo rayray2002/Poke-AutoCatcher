@@ -99,22 +99,22 @@ class AutoCatcher:
         bag = self.driver.find_elements_by_class_name('embedDescription-1Cuq9a')[-1].text
         m = re.findall(r'x(\d*) ', bag)
         if int(m[0]) < int(self.config['catcher']['poke_ball']):
-            self.send_message('!!buy poke ball 10')
-            print('buy poke ball 10')
+            self.send_message('!!buy poke ball ' + self.config['catcher']['poke_ball'])
+            print('buy poke ball')
             self.wait_bot()
 
         if int(m[1]) < int(self.config['catcher']['great_ball']):
-            self.send_message('!!buy great ball 10')
-            print('buy great ball 10')
+            self.send_message('!!buy great ball ' + self.config['catcher']['great_ball'])
+            print('buy great ball')
             self.wait_bot()
 
         if int(m[2]) < int(self.config['catcher']['ultra_ball']):
-            self.send_message('!!buy ultra ball 10')
-            print('buy ultra ball 10')
+            self.send_message('!!buy ultra ball ' + self.config['catcher']['ultra_ball'])
+            print('buy ultra ball')
             self.wait_bot()
 
         if int(m[2]) < int(self.config['catcher']['master_ball']):
-            self.send_message('!!buy master ball 1')
+            self.send_message('!!buy master ball ' + self.config['catcher']['master_ball'])
             print('buy master ball')
             self.wait_bot()
         print('bag checked')
@@ -128,7 +128,7 @@ class AutoCatcher:
             self.send_message('!!p')
             self.wait_bot()
             print('new pokemon')
-            time.sleep(5)
+            time.sleep(2)
 
             flag = True
             count = 0
@@ -145,7 +145,6 @@ class AutoCatcher:
 
             time.sleep(5)
             respond = self.driver.find_elements_by_class_name('contents-2mQqc9')[-1].text
-            print(respond)
             if 'no rolls left' in respond or 'Bot Traffic' in respond:
                 print('No rolls left')
                 break
