@@ -18,7 +18,10 @@ while True:
                 flag = False
             except Exception as e:
                 print(e)
-    driver.refresh()
+        driver.refresh()
+    elif count % 5 == 0:
+        send_message(driver, str(count))
+
     time.sleep(60)
     count += 1
     print(count)
