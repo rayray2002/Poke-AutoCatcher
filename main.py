@@ -189,15 +189,22 @@ class AutoCatcher:
                 self.wait_bot()
                 info = self.driver.find_elements_by_class_name('embedDescription-1Cuq9a')[-1].text
                 evolve = re.search(r'Evolves into: (.*)', info).group(1)
-                while evolve != 'None':
-                    self.send_message(f'!!info {evolve}')
+                if evolve != 'None':
+                    while evolve != 'None':
+                        self.send_message(f'!!info {evolve}')
+                        self.wait_bot()
+                        info = self.driver.find_elements_by_class_name('embedDescription-1Cuq9a')[-1].text
+                        evolve = re.search(r'Evolves into: (.*)', info).group(1)
+                    self.send_message(f'!!info mega {evolve}')
                     self.wait_bot()
-                    info = self.driver.find_elements_by_class_name('embedDescription-1Cuq9a')[-1].text
-                    evolve = re.search(r'Evolves into: (.*)', info).group(1)
-                self.send_message(f'!!info mega {evolve}')
-                self.wait_bot()
-                self.send_message(f'!!info {evolve} gmax')
-                self.wait_bot()
+                    self.send_message(f'!!info {evolve} gmax')
+                    self.wait_bot()
+                else:
+                    self.send_message(f'!!info mega {name}')
+                    self.wait_bot()
+                    self.send_message(f'!!info {name} gmax')
+                    self.wait_bot()
+
                 info = self.driver.find_elements_by_class_name('embedDescription-1Cuq9a')[-1].text
                 max_cp = re.search(r'Max CP: (.*)', info).group(1)
                 if int(max_cp) > 2000:
