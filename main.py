@@ -22,7 +22,7 @@ class AutoCatcher:
 
         self.driver = webdriver.Chrome(options=options, executable_path=self.config['default']['driver_path'])
         self.driver.get("https://discord.com/channels/878300201541062656/878302161749033021")
-        self.driver.fullscreen_window()
+        self.driver.maximize_window()
 
         if int(self.config['default']['auto_login']):
             self.login_by_txt()
