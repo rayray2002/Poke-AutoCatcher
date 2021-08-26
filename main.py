@@ -128,8 +128,8 @@ def catcher(driver):
 
         time.sleep(5)
         respond = driver.find_elements_by_class_name('contents-2mQqc9')[-1].text
-        if 'no rolls left' in respond or 'Bot Traffic' in respond:
-            print('no rolls left')
+        if 'No rolls left' in respond or 'Bot Traffic' in respond:
+            print('No rolls left')
             break
 
 
@@ -166,14 +166,23 @@ def wondertrade(driver):
         name, rarity, CP = get_name(driver)
         print(name, rarity, CP)
 
-        if rarity == 'Legendary':
+        dream = ['Riolu']
+        if rarity == 'Legendary' or name in dream:
             send_message(driver, f'!!info {name}')
-            os.system('say "catched Legendary"')
+            os.system('say "Legendary"')
 
             return
-        elif rarity == 'Rare' or CP >= 1500:
-            os.system('say "catched rare"')
+        elif rarity == 'Rare' or CP >= 2000:
+            os.system('say "rare"')
             send_message(driver, f'!!info {name}')
+            wait_bot(driver)
+            info = driver.find_elements_by_class_name('embedDescription-1Cuq9a')[-1].text
+            evolve = re.search(r'Evolves into: (.*)', info).group(1)
+            while name != 'None':
+                send_message(driver, f'!!info {evolve}')
+                wait_bot(driver)
+                info = driver.find_elements_by_class_name('embedDescription-1Cuq9a')[-1].text
+                evolve = re.search(r'Evolves into: (.*)', info).group(1)
             time.sleep(10)
 
         while True and not max_level:

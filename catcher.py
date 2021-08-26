@@ -1,10 +1,12 @@
 from main import *
 
 driver = open_driver()
+channel = driver.find_element_by_link_text('正義魔人的頻道')
+channel.click()
 
 count = 0
 while True:
-    if count % 20 == 0:
+    if count % 30 == 0:
         flag = True
         while flag:
             try:
