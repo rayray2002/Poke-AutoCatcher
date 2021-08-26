@@ -1,12 +1,13 @@
 # Poke-AutoCatcher
 
-A auto catcher and wondertrader for Discord bot Poké Catcher.
+A auto catcher and wondertrader for Discord bot [Poké Catcher](https://top.gg/bot/707333868713410682).
 
 ## How to Use?
-1. Download Chromedriver for your Chrome version [here](https://chromedriver.chromium.org/).
-2. Run catcher.exe or trader.exe.
-3. Login your Discord account.
-4. Enjoy auto catching and wondertrading.
+1. Download executable exe files in [release](https://github.com/rayray2002/Poke-AutoCatcher/releases)
+2. Download Chromedriver for your Chrome version [here](https://chromedriver.chromium.org/).
+3. Run catcher.exe or trader.exe.
+4. Login your Discord account.
+5. Enjoy auto catching and wondertrading.
 
 ## Config Setting
 ```angular2html
