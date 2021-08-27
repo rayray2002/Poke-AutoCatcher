@@ -11,9 +11,11 @@ import configparser
 
 class AutoCatcher:
 
-    def __init__(self):
+    def __init__(self, path='config.ini'):
         self.config = configparser.ConfigParser()
-        self.config.read('config.ini', 'utf8')
+        self.config.read(path, 'utf8')
+        self.textbox_xpath = '//*[@id="app-mount"]/div[2]/div/div[2]/div/div/div/div/div[2]/div[2]/' \
+                             'main/form/div[1]/div/div/div[1]/div/div[3]/div[2]/div'
 
         options = webdriver.ChromeOptions()
         # options.add_argument("--headless")
@@ -28,9 +30,7 @@ class AutoCatcher:
             self.login_by_txt()
 
         try:
-            wait = WebDriverWait(self.driver, 60).until(EC.presence_of_element_located(
-                (By.XPATH,
-                 '//*[@id="app-mount"]/div[2]/div/div[2]/div/div/div/div/div[2]/div[2]/main/form/div[1]/div/div/div[1]/div/div[3]/div[2]/div')))
+            WebDriverWait(self.driver, 60).until(EC.presence_of_element_located((By.XPATH, self.textbox_xpath)))
         except Exception as e:
             print(e)
 
@@ -66,13 +66,6 @@ class AutoCatcher:
         confirm_button.click()
         time.sleep(5)
 
-        try:
-            wait = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located(
-                (By.XPATH,
-                 '//*[@id="app-mount"]/div[2]/div/div[2]/div/div/div/div/div[2]/div[2]/main/form/div[1]/div/div/div[1]/div/div[3]/div[2]/div')))
-        except Exception as e:
-            print(e)
-
     def wait_bot(self, timeout=10):
         t = time.time()
         time.sleep(1)
@@ -89,8 +82,7 @@ class AutoCatcher:
             self.try_function(func, timeout, **kwargs)
 
     def send_message(self, text, log=False):
-        text_box = self.driver.find_element_by_xpath(
-            '//*[@id="app-mount"]/div[2]/div/div[2]/div/div/div/div/div[2]/div[2]/main/form/div[1]/div/div/div[1]/div/div[3]/div[2]/div')
+        text_box = self.driver.find_element_by_xpath(self.textbox_xpath)
         text_box.send_keys(text)
         time.sleep(0.5)
         text_box.send_keys(Keys.ENTER)
