@@ -86,7 +86,7 @@ class AutoCatcher:
         func(**kwargs)
         if not self.wait_bot(timeout):
             print('No respond, retrying')
-            self.try_function(self, func, timeout=timeout, **kwargs)
+            self.try_function(func, timeout, **kwargs)
 
     def send_message(self, text, log=False):
         text_box = self.driver.find_element_by_xpath(
@@ -97,8 +97,8 @@ class AutoCatcher:
         if log:
             print(text)
 
-    def bag_check(self):
-        self.try_function(self.send_message, 10, text='!!bag')
+    def bag_check(self, timeout):
+        self.try_function(self.send_message, timeout, text='!!bag')
         time.sleep(2)
         bag = self.driver.find_elements_by_class_name('embedDescription-1Cuq9a')[-1].text
         m = re.findall(r'x(\d*) ', bag)
@@ -107,17 +107,18 @@ class AutoCatcher:
             ball = self.config['catcher'][ball_order[i]]
             if int(m[i]) < int(ball):
                 self.try_function(self.send_message, 5, text=f"!!buy {ball_order[i]} ball {ball}", log=True)
+                time.sleep(1)
         self.send_message('Bag checked', log=True)
 
     def catcher(self):
-        self.bag_check()
-        self.try_function(self.send_message, 10, text='!!pokestop')
-        time.sleep(2)
+        self.bag_check(60)
+        self.try_function(self.send_message, 60, text='!!pokestop')
+        time.sleep(3)
 
         while True:
             self.try_function(self.send_message, 5, text='!!p')
             print('New pokemon')
-            time.sleep(2)
+            time.sleep(3)
 
             respond = self.driver.find_elements_by_class_name('contents-2mQqc9')[-1].text
             if 'no rolls left' in respond or 'Bot Traffic' in respond:
@@ -125,18 +126,20 @@ class AutoCatcher:
                 break
 
             flag = True
-            count = 0
-            while flag and count < 10:
-                try:
-                    pokeball = self.driver.find_elements_by_class_name('reactionInner-15NvIl')[-2]
-                    pokeball.click()
-                    print('Caught')
-                    flag = False
-                except Exception as e:
-                    time.sleep(1)
-                    count += 1
-                    print(f'Retry {count}, {e}')
-            time.sleep(5)
+            retry_count = 0
+            for i in range(3):
+                while flag and retry_count < 10:
+                    try:
+                        pokeball = self.driver.find_elements_by_class_name('reactionInner-15NvIl')[-2]
+                        pokeball.click()
+                        print('Caught')
+                        flag = False
+                    except Exception as e:
+                        time.sleep(0.5)
+                        retry_count += 1
+                        print(f'Retry {retry_count}, {e}')
+                time.sleep(1)
+            time.sleep(3)
 
     def find_last(self):
         text = self.driver.find_elements_by_class_name('embedDescription-1Cuq9a')[-1].text.split('\n')
