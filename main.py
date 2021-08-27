@@ -101,12 +101,13 @@ class AutoCatcher:
         self.try_function(self.send_message, timeout, text='!!bag')
         time.sleep(2)
         bag = self.driver.find_elements_by_class_name('embedDescription-1Cuq9a')[-1].text
-        m = re.findall(r'x(\d*) ', bag)
-        ball_order = ['poke', 'great', 'ultra', 'master']
-        for i in range(4):
-            ball = self.config['catcher'][ball_order[i]]
-            if int(m[i]) < int(ball):
-                self.try_function(self.send_message, 5, text=f"!!buy {ball_order[i]} ball {ball}", log=True)
+        ball_order = ['Poke', 'Great', 'Ultra', 'Master']
+        for ball in ball_order:
+            current = int(re.search(rf'x(\d*) {ball}', bag).group(1))
+            ball_amount = int(self.config['catcher'][ball])
+            # print(current)
+            if current < ball_amount:
+                self.try_function(self.send_message, 5, text=f"!!buy {ball} ball {ball_amount}", log=True)
                 time.sleep(1)
         self.send_message('Bag checked', log=True)
 
