@@ -34,23 +34,18 @@ class AutoCatcher:
         except Exception as e:
             print(e)
 
-        time.sleep(2)
+        time.sleep(1)
         try:
             close = self.driver.find_element_by_class_name('close-relY5R')
             close.click()
         except Exception as e:
             print('no close button', e)
 
-        time.sleep(2)
+        time.sleep(1)
         channel = self.driver.find_element_by_link_text(self.config['default']['channel'])
-        time.sleep(2)
         channel.click()
 
-        print('logged in')
-        text_box = self.driver.find_element_by_xpath(
-            '//*[@id="app-mount"]/div[2]/div/div[2]/div/div/div/div/div[2]/div[2]/main/form/div[1]/div/div/div[1]/div/div[3]/div[2]/div')
-        text_box.send_keys('logged in')
-        text_box.send_keys(Keys.ENTER)
+        self.send_message('Logged in', log=True)
 
     def login_by_txt(self):
         email = self.config['default']['email']
@@ -78,57 +73,56 @@ class AutoCatcher:
         except Exception as e:
             print(e)
 
-    def wait_bot(self):
+    def wait_bot(self, timeout=10):
+        t = time.time()
         time.sleep(1)
         author = self.driver.find_elements_by_class_name('headerText-3Uvj1Y')[-1].text
-        while 'Poké Catcher' not in author:
+        while 'Poké Catcher' not in author and time.time() - t < timeout:
             author = self.driver.find_elements_by_class_name('headerText-3Uvj1Y')[-1].text
             time.sleep(1)
+        return 'Poké Catcher' in author
 
-    def send_message(self, text):
+    def try_function(self, func, timeout, **kwargs):
+        func(**kwargs)
+        if not self.wait_bot(timeout):
+            print('No respond, retrying')
+            self.try_function(self, func, timeout=timeout, **kwargs)
+
+    def send_message(self, text, log=False):
         text_box = self.driver.find_element_by_xpath(
             '//*[@id="app-mount"]/div[2]/div/div[2]/div/div/div/div/div[2]/div[2]/main/form/div[1]/div/div/div[1]/div/div[3]/div[2]/div')
         text_box.send_keys(text)
         time.sleep(0.5)
         text_box.send_keys(Keys.ENTER)
+        if log:
+            print(text)
 
     def bag_check(self):
-        self.send_message('!!bag')
-        self.wait_bot()
+        self.try_function(self.send_message, 10, text='!!bag')
         time.sleep(2)
         bag = self.driver.find_elements_by_class_name('embedDescription-1Cuq9a')[-1].text
         m = re.findall(r'x(\d*) ', bag)
-        if int(m[0]) < int(self.config['catcher']['poke_ball']):
-            self.send_message('!!buy poke ball ' + self.config['catcher']['poke_ball'])
-            print('buy poke ball')
-            self.wait_bot()
-
-        if int(m[1]) < int(self.config['catcher']['great_ball']):
-            self.send_message('!!buy great ball ' + self.config['catcher']['great_ball'])
-            print('buy great ball')
-            self.wait_bot()
-
-        if int(m[2]) < int(self.config['catcher']['ultra_ball']):
-            self.send_message('!!buy ultra ball ' + self.config['catcher']['ultra_ball'])
-            print('buy ultra ball')
-            self.wait_bot()
-
-        if int(m[2]) < int(self.config['catcher']['master_ball']):
-            self.send_message('!!buy master ball ' + self.config['catcher']['master_ball'])
-            print('buy master ball')
-            self.wait_bot()
-        print('bag checked')
+        ball_order = ['poke', 'great', 'ultra', 'master']
+        for i in range(4):
+            ball = self.config['catcher'][ball_order[i]]
+            if int(m[i]) < int(ball):
+                self.try_function(self.send_message, 5, text=f"!!buy {ball_order[i]} ball {ball}", log=True)
+        self.send_message('Bag checked', log=True)
 
     def catcher(self):
         self.bag_check()
-        self.send_message('!!pokestop')
+        self.try_function(self.send_message, 10, text='!!pokestop')
         time.sleep(2)
 
         while True:
-            self.send_message('!!p')
-            self.wait_bot()
-            print('new pokemon')
+            self.try_function(self.send_message, 5, text='!!p')
+            print('New pokemon')
             time.sleep(2)
+
+            respond = self.driver.find_elements_by_class_name('contents-2mQqc9')[-1].text
+            if 'no rolls left' in respond or 'Bot Traffic' in respond:
+                self.send_message('No rolls left', log=True)
+                break
 
             flag = True
             count = 0
@@ -136,18 +130,13 @@ class AutoCatcher:
                 try:
                     pokeball = self.driver.find_elements_by_class_name('reactionInner-15NvIl')[-2]
                     pokeball.click()
-                    print('catched')
+                    print('Caught')
                     flag = False
                 except Exception as e:
                     time.sleep(1)
                     count += 1
-                    print(f'retry {count}, {e}')
-
+                    print(f'Retry {count}, {e}')
             time.sleep(5)
-            respond = self.driver.find_elements_by_class_name('contents-2mQqc9')[-1].text
-            if 'no rolls left' in respond or 'Bot Traffic' in respond:
-                print('No rolls left')
-                break
 
     def find_last(self):
         text = self.driver.find_elements_by_class_name('embedDescription-1Cuq9a')[-1].text.split('\n')
@@ -190,7 +179,7 @@ class AutoCatcher:
                 self.send_message(f'!!info {name}')
                 self.wait_bot()
                 info = self.driver.find_elements_by_class_name('embedDescription-1Cuq9a')[-1].text
-                evolve = re.search(r'Evolves into: (.*)', info).group(1)
+                evolve = re.search(r'Evolves into: (.*)', info).group(1).strip()
                 if evolve != 'None':
                     while evolve != 'None':
                         self.send_message(f'!!info {evolve}')

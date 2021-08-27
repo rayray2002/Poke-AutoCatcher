@@ -1,5 +1,13 @@
 from main import *
 
-autoCatcher = AutoCatcher()
-autoCatcher.wondertrade()
-autoCatcher.driver.quit()
+try:
+    autoCatcher = AutoCatcher()
+    autoCatcher.wondertrade()
+    autoCatcher.driver.quit()
+except:
+    try:
+        autoCatcher.driver.quit()
+    except:
+        pass
+exit()
+
