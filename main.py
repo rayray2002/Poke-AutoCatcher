@@ -125,9 +125,9 @@ class AutoCatcher:
                 self.send_message('No rolls left', log=True)
                 break
 
-            flag = True
-            retry_count = 0
             for i in range(3):
+                flag = True
+                retry_count = 0
                 while flag and retry_count < 10:
                     try:
                         pokeball = self.driver.find_elements_by_class_name('reactionInner-15NvIl')[-2]
