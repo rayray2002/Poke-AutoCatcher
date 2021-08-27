@@ -152,7 +152,10 @@ class AutoCatcher:
     def find_last(self):
         text = self.driver.find_elements_by_class_name('embedDescription-1Cuq9a')[-1].text
         # print(text.split('\n'))
-        return len(text.split('\n'))
+        last = len(text.split('\n'))
+        while 'in team' in text[last - 1]:
+            last -= 1
+        return last
 
     def get_name(self):
         try:
@@ -195,15 +198,13 @@ class AutoCatcher:
                         self.wait_bot()
                         info = self.driver.find_elements_by_class_name('embedDescription-1Cuq9a')[-1].text
                         evolve = re.search(r'Evolves into: (.*)', info).group(1)
-                    self.send_message(f'!!info mega {evolve}')
-                    self.wait_bot()
-                    self.send_message(f'!!info {evolve} gmax')
-                    self.wait_bot()
                 else:
-                    self.send_message(f'!!info mega {name}')
-                    self.wait_bot()
-                    self.send_message(f'!!info {name} gmax')
-                    self.wait_bot()
+                    evolve = name
+
+                self.send_message(f'!!info mega {evolve}')
+                self.wait_bot()
+                self.send_message(f'!!info {evolve} gmax')
+                self.wait_bot()
 
                 info = self.driver.find_elements_by_class_name('embedDescription-1Cuq9a')[-1].text
                 max_cp = re.search(r'Max CP: (.*)', info).group(1)
