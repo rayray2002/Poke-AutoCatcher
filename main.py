@@ -150,9 +150,8 @@ class AutoCatcher:
                 break
 
     def find_last(self):
-        text = self.driver.find_elements_by_class_name('embedDescription-1Cuq9a')[-1].text
-        # print(text.split('\n'))
-        last = len(text.split('\n'))
+        text = self.driver.find_elements_by_class_name('embedDescription-1Cuq9a')[-1].text.split('\n')
+        last = len(text)
         while 'in team' in text[last - 1]:
             last -= 1
         return last
