@@ -27,7 +27,7 @@ while True:
         if pokeball.get_attribute('aria-pressed') != 'true':
             pokeball.click()
             print('clicked')
-    if 'taken in by Rayh' in text and claimed != text_raw:
+    if 'taken in by Rayh' in text and claimed != text_raw and claimed != 0:
         text_box = driver.find_element_by_xpath(
             '//*[@id="app-mount"]/div[2]/div/div[2]/div/div/div/div[2]/div[2]/div[2]/main/form/div[1]/div/div/div[1]/div/div[1]/div[2]')
 
