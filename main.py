@@ -175,15 +175,14 @@ class AutoCatcher:
                 self.send_message(f'!!info {name}')
                 self.wait_bot()
                 info = self.driver.find_elements_by_class_name('embedDescription-1Cuq9a')[-1].text
-                evolve = re.search(r'Evolves into: (.*)', info).group(1).strip()
-                if evolve != 'None':
-                    while evolve != 'None':
-                        self.send_message(f'!!info {evolve}')
-                        self.wait_bot()
-                        info = self.driver.find_elements_by_class_name('embedDescription-1Cuq9a')[-1].text
-                        evolve = re.search(r'Evolves into: (.*)', info).group(1)
-                else:
-                    evolve = name
+                evolve_into = re.search(r'Evolves into: (.*)', info).group(1).strip()
+                evolve = name
+                while evolve_into != 'None':
+                    evolve = evolve_into
+                    self.send_message(f'!!info {evolve_into}')
+                    self.wait_bot()
+                    info = self.driver.find_elements_by_class_name('embedDescription-1Cuq9a')[-1].text
+                    evolve_into = re.search(r'Evolves into: (.*)', info).group(1)
 
                 self.send_message(f'!!info mega {evolve}')
                 self.wait_bot()
@@ -197,7 +196,7 @@ class AutoCatcher:
                         os.system(f'say "{10 - i}"')
                         time.sleep(1)
 
-            while True and not max_level:
+            while True and not max_level and bool(self.config['trader']['powerup']):
                 self.send_message(f'!!powerup {name}')
                 self.wait_bot()
                 last = self.find_last()
@@ -218,7 +217,6 @@ class AutoCatcher:
                     break
 
             self.send_message(f'!!fortrade add {name}')
-            time.sleep(1)
             self.wait_bot()
             self.send_message(str(self.find_last()))
 
