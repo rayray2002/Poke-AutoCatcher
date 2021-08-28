@@ -20,4 +20,10 @@ while True:
         if pokeball.get_attribute('aria-pressed') != 'true':
             pokeball.click()
             print('clicked')
+    if 'Rayh has won' in text:
+        text_box = driver.find_element_by_xpath(
+            '//*[@id="app-mount"]/div[2]/div/div[2]/div/div/div/div[2]/div[2]/div[2]/main/form/div[1]/div/div/div[1]/div/div[1]/div[2]/div')
+        text_box.send_keys('tks')
+        time.sleep(0.5)
+        text_box.send_keys(Keys.ENTER)
     time.sleep(10)
