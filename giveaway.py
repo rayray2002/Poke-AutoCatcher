@@ -29,9 +29,7 @@ while True:
             print('clicked')
     if 'taken in by Rayh' in text and claimed != text_raw:
         text_box = driver.find_element_by_xpath(
-            '//*[@id="app-mount"]/div[2]/div/div[2]/div/div/div/div[2]/div[2]/div[2]/main/form/div[1]/div/div/div[1]/div/div[1]/div[2]/div')
-        # text_box = driver.find_element_by_xpath(
-        #     '//*[@id="app-mount"]/div[2]/div/div[2]/div/div/div/div/div[2]/div[2]/main/form/div[1]/div/div/div[1]/div/div[3]/div[2]/div')
+            '//*[@id="app-mount"]/div[2]/div/div[2]/div/div/div/div[2]/div[2]/div[2]/main/form/div[1]/div/div/div[1]/div/div[1]/div[2]')
 
         text_box.send_keys('Tyy!')
         claimed = text_raw
