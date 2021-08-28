@@ -1,7 +1,6 @@
-import time
-
 from main import *
 
+print('Input display name:')
 name = input()
 
 driver = webdriver.Chrome(executable_path='./chromedriver')
@@ -35,7 +34,9 @@ while True:
             print('clicked')
     if f'taken in by {name}' in text and claimed != text_raw:
         text_box = driver.find_element_by_xpath(textbox_xpath)
-        print('Thanked')
+        print('=====================')
+        print('      Thanked')
+        print('=====================')
         text_box.send_keys('Ty')
         claimed = text_raw
         time.sleep(0.5)

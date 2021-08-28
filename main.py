@@ -168,8 +168,9 @@ class AutoCatcher:
     def wondertrade(self):
         max_level = False
         while True:
-            self.send_message('!!wondertrade')
-            self.wait_bot()
+            # self.send_message('!!wondertrade')
+            # self.wait_bot()
+            self.try_function(self.send_message, 5, text='!!wondertrade')
             self.send_message('1')
             time.sleep(1)
             name, rarity, CP = self.get_name()
@@ -183,22 +184,26 @@ class AutoCatcher:
 
             elif rarity == 'Rare' or CP >= int(self.config['trader']['CP']):
                 os.system('say "rare"')
-                self.send_message(f'!!info {name}')
-                self.wait_bot()
+                # self.send_message(f'!!info {name}')
+                # self.wait_bot()
+                self.try_function(self.send_message, 5, text=f'!!info {name}')
                 info = self.driver.find_elements_by_class_name('embedDescription-1Cuq9a')[-1].text
                 evolve_into = re.search(r'Evolves into: (.*)', info).group(1).strip()
                 evolve = name
-                while evolve != 'None':
+                while evolve_into != 'None':
                     evolve = evolve_into
-                    self.send_message(f'!!info {evolve_into}')
-                    self.wait_bot()
+                    self.try_function(self.send_message, 10, text=f'!!info {evolve_into}')
+                    # self.send_message(f'!!info {evolve_into}')
+                    # self.wait_bot()
                     info = self.driver.find_elements_by_class_name('embedDescription-1Cuq9a')[-1].text
                     evolve_into = re.search(r'Evolves into: (.*)', info).group(1)
 
-                self.send_message(f'!!info mega {evolve}')
-                self.wait_bot()
-                self.send_message(f'!!info {evolve} gmax')
-                self.wait_bot()
+                # self.send_message(f'!!info mega {evolve}')
+                # self.wait_bot()
+                # self.send_message(f'!!info {evolve} gmax')
+                # self.wait_bot()
+                self.try_function(self.send_message, 5, text=f'!!info mega {evolve}')
+                self.try_function(self.send_message, 5, text=f'!!info {evolve} gmax')
 
                 info = self.driver.find_elements_by_class_name('embedDescription-1Cuq9a')[-1].text
                 max_cp = re.search(r'Max CP: (.*)', info).group(1)
@@ -208,8 +213,9 @@ class AutoCatcher:
                         time.sleep(1)
 
             while True and not max_level and bool(self.config['trader']['powerup']):
-                self.send_message(f'!!powerup {name}')
-                self.wait_bot()
+                # self.send_message(f'!!powerup {name}')
+                # self.wait_bot()
+                self.try_function(self.send_message, 5, text=f'!!powerup {name}')
                 last = self.find_last()
                 self.send_message(str(last))
                 time.sleep(1)
@@ -220,8 +226,9 @@ class AutoCatcher:
                     max_level = True
                     break
 
-            self.send_message(f'!!fortrade add {name}')
-            self.wait_bot()
+            # self.send_message(f'!!fortrade add {name}')
+            # self.wait_bot()
+            self.try_function(self.send_message, 5, text=f'!!fortrade add {name}')
             self.send_message(str(self.find_last()))
 
 
