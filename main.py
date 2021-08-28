@@ -137,6 +137,17 @@ class AutoCatcher:
     def find_last(self):
         text = self.driver.find_elements_by_class_name('embedDescription-1Cuq9a')[-1].text.split('\n')
         last = len(text)
+        limit = 25
+        while last >= limit:
+            next_page = self.driver.find_elements_by_class_name('reactionInner-15NvIl')[-1]
+            time.sleep(1)
+            next_page.click()
+            time.sleep(1)
+            next_page.click()
+            text = self.driver.find_elements_by_class_name('embedDescription-1Cuq9a')[-1].text.split('\n')
+            last = len(text) + limit
+            limit += 25
+
         while 'in team' in text[last - 1]:
             last -= 1
         return last
@@ -168,8 +179,8 @@ class AutoCatcher:
             if rarity == 'Legendary' or name in dream:
                 self.send_message(f'!!info {name}')
                 os.system('say "Legendary"')
-
                 return
+
             elif rarity == 'Rare' or CP >= int(self.config['trader']['CP']):
                 os.system('say "rare"')
                 self.send_message(f'!!info {name}')
@@ -177,7 +188,7 @@ class AutoCatcher:
                 info = self.driver.find_elements_by_class_name('embedDescription-1Cuq9a')[-1].text
                 evolve_into = re.search(r'Evolves into: (.*)', info).group(1).strip()
                 evolve = name
-                while evolve_into != 'None':
+                while evolve != 'None':
                     evolve = evolve_into
                     self.send_message(f'!!info {evolve_into}')
                     self.wait_bot()
@@ -200,13 +211,6 @@ class AutoCatcher:
                 self.send_message(f'!!powerup {name}')
                 self.wait_bot()
                 last = self.find_last()
-                while last >= 25:
-                    next = self.driver.find_elements_by_class_name('reactionInner-15NvIl')[-1]
-                    time.sleep(3)
-                    next.click()
-                    time.sleep(2)
-                    last = self.find_last()
-
                 self.send_message(str(last))
                 time.sleep(1)
                 respond = self.driver.find_elements_by_class_name('contents-2mQqc9')[-1].text
