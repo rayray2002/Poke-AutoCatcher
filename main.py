@@ -17,12 +17,7 @@ class AutoCatcher:
         self.textbox_xpath = '//*[@id="app-mount"]/div[2]/div/div[2]/div/div/div/div/div[2]/div[2]/' \
                              'main/form/div[1]/div/div/div[1]/div/div[3]/div[2]/div'
 
-        options = webdriver.ChromeOptions()
-        # options.add_argument("--headless")
-        options.add_argument("disable-infobars")
-        options.add_argument("--disable-extensions")
-
-        self.driver = webdriver.Chrome(options=options, executable_path=self.config['default']['driver_path'])
+        self.driver = webdriver.Chrome(executable_path=self.config['default']['driver_path'])
         self.driver.get(self.config['default']['server_url'])
         self.driver.maximize_window()
 
@@ -144,6 +139,7 @@ class AutoCatcher:
             next_page.click()
             time.sleep(1)
             next_page.click()
+            time.sleep(1)
             text = self.driver.find_elements_by_class_name('embedDescription-1Cuq9a')[-1].text.split('\n')
             last = len(text) + limit
             limit += 25
@@ -153,24 +149,27 @@ class AutoCatcher:
         return last
 
     def get_name(self):
-        try:
+        flag = 1
+        name = ''
+        rarity = ''
+        CP = 0
+        while flag:
             text = self.driver.find_elements_by_class_name('embedDescription-1Cuq9a')[-1].text
             m = re.search(r'(.*) \((.*)\) \(CP: (.*)\)', text)
-        except:
-            time.sleep(1)
-            text = self.driver.find_elements_by_class_name('embedDescription-1Cuq9a')[-1].text
-            m = re.search(r'(.*) \((.*)\) \(CP: (.*)\)', text)
-        name = m.group(1).strip()
-        rarity = m.group(2).strip()
-        CP = int(m.group(3).strip())
+            try:
+                name = m.group(1).strip()
+                rarity = m.group(2).strip()
+                CP = int(m.group(3).strip())
+                flag = 0
+            except AttributeError:
+                print('retry: get name')
+                time.sleep(1)
         return name, rarity, CP
 
     def wondertrade(self):
         max_level = False
         while True:
-            # self.send_message('!!wondertrade')
-            # self.wait_bot()
-            self.try_function(self.send_message, 5, text='!!wondertrade')
+            self.try_function(self.send_message, 2, text='!!wondertrade')
             self.send_message('1')
             time.sleep(1)
             name, rarity, CP = self.get_name()
@@ -184,8 +183,6 @@ class AutoCatcher:
 
             elif rarity == 'Rare' or CP >= int(self.config['trader']['CP']):
                 os.system('say "rare"')
-                # self.send_message(f'!!info {name}')
-                # self.wait_bot()
                 self.try_function(self.send_message, 5, text=f'!!info {name}')
                 info = self.driver.find_elements_by_class_name('embedDescription-1Cuq9a')[-1].text
                 evolve_into = re.search(r'Evolves into: (.*)', info).group(1).strip()
@@ -193,31 +190,22 @@ class AutoCatcher:
                 while evolve_into != 'None':
                     evolve = evolve_into
                     self.try_function(self.send_message, 10, text=f'!!info {evolve_into}')
-                    # self.send_message(f'!!info {evolve_into}')
-                    # self.wait_bot()
                     info = self.driver.find_elements_by_class_name('embedDescription-1Cuq9a')[-1].text
                     evolve_into = re.search(r'Evolves into: (.*)', info).group(1)
 
-                # self.send_message(f'!!info mega {evolve}')
-                # self.wait_bot()
-                # self.send_message(f'!!info {evolve} gmax')
-                # self.wait_bot()
                 self.try_function(self.send_message, 5, text=f'!!info mega {evolve}')
                 self.try_function(self.send_message, 5, text=f'!!info {evolve} gmax')
 
                 info = self.driver.find_elements_by_class_name('embedDescription-1Cuq9a')[-1].text
                 max_cp = re.search(r'Max CP: (.*)', info).group(1)
                 if int(max_cp) > 2000:
-                    for i in range(10):
-                        os.system(f'say "{10 - i}"')
+                    for i in range(5):
+                        os.system(f'say "{5 - i}"')
                         time.sleep(1)
 
             while True and not max_level and bool(self.config['trader']['powerup']):
-                # self.send_message(f'!!powerup {name}')
-                # self.wait_bot()
                 self.try_function(self.send_message, 5, text=f'!!powerup {name}')
-                last = self.find_last()
-                self.send_message(str(last))
+                self.send_message(str(self.find_last()))
                 time.sleep(1)
                 respond = self.driver.find_elements_by_class_name('contents-2mQqc9')[-1].text
                 if 'you do not have enough candy' in respond:
@@ -226,9 +214,7 @@ class AutoCatcher:
                     max_level = True
                     break
 
-            # self.send_message(f'!!fortrade add {name}')
-            # self.wait_bot()
-            self.try_function(self.send_message, 5, text=f'!!fortrade add {name}')
+            self.try_function(self.send_message, 2, text=f'!!fortrade add {name}')
             self.send_message(str(self.find_last()))
 
 

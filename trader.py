@@ -4,7 +4,8 @@ try:
     autoCatcher = AutoCatcher()
     autoCatcher.wondertrade()
     autoCatcher.driver.quit()
-except:
+except Exception as e:
+    print(e)
     try:
         autoCatcher.driver.quit()
     except:
