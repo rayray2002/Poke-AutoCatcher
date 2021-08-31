@@ -1,6 +1,9 @@
-import time
+import random
 
 from main import *
+
+thank_words = ['Ty', 'tysm', 'tyy', 'Tyy']
+emojis = [':eevee_cute:', ':eevee_pat:', ':eevee_sparkle:', ':jolteon_heart:', ':eevee_angle:']
 
 print('Input display name:')
 name = input()
@@ -38,7 +41,10 @@ while True:
     if f'taken in by {name}' in text and claimed != text_raw:
         try:
             text_box = driver.find_element_by_xpath(textbox_xpath)
-            text_box.send_keys('Ty')
+            text_box.send_keys(random.choice(thank_words))
+            time.sleep(0.5)
+            text_box.send_keys(Keys.ENTER)
+            text_box.send_keys(random.choice(emojis))
             time.sleep(0.5)
             text_box.send_keys(Keys.ENTER)
 
