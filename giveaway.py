@@ -47,6 +47,8 @@ while True:
             text_box.send_keys(random.choice(emojis))
             time.sleep(0.5)
             text_box.send_keys(Keys.ENTER)
+            time.sleep(0.5)
+            text_box.send_keys(Keys.ENTER)
 
         except Exception as e:
             print('retry', e)
