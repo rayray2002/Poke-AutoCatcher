@@ -1,3 +1,5 @@
+import time
+
 from main import *
 
 print('Input display name:')
@@ -28,17 +30,23 @@ while True:
     # print(text)
     if 'given away' in text:
         print('new giveaway!!')
+        time.sleep(1)
         pokeball = driver.find_elements_by_class_name('reactionInner-15NvIl')[-1]
         if pokeball.get_attribute('aria-pressed') != 'true':
             pokeball.click()
             print('clicked')
     if f'taken in by {name}' in text and claimed != text_raw:
-        text_box = driver.find_element_by_xpath(textbox_xpath)
+        try:
+            text_box = driver.find_element_by_xpath(textbox_xpath)
+            text_box.send_keys('Ty')
+            time.sleep(0.5)
+            text_box.send_keys(Keys.ENTER)
+
+        except Exception as e:
+            print('retry', e)
+            break
         print('=====================')
         print('      Thanked')
         print('=====================')
-        text_box.send_keys('Ty')
         claimed = text_raw
-        time.sleep(0.5)
-        text_box.send_keys(Keys.ENTER)
     time.sleep(10)
