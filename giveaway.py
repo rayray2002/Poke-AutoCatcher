@@ -3,7 +3,6 @@ import random
 from main import *
 
 thank_words = ['Ty', 'tysm', 'tyy', 'Tyy']
-emojis = [':eevee_cute:', ':eevee_pat:', ':eevee_sparkle:', ':jolteon_heart:', ':eevee_angle:']
 
 print('Input display name:')
 name = input()
@@ -30,25 +29,31 @@ while True:
     if claimed is None:
         claimed = text_raw
 
-    # print(text)
     if 'given away' in text:
         print('new giveaway!!')
         time.sleep(1)
         pokeball = driver.find_elements_by_class_name('reactionInner-15NvIl')[-1]
-        if pokeball.get_attribute('aria-pressed') != 'true':
-            pokeball.click()
-            print('clicked')
+
+        flag = True
+        retry_count = 0
+        while flag and retry_count < 5:
+            try:
+                pokeball = driver.find_elements_by_class_name('reactionInner-15NvIl')[-1]
+                if pokeball.get_attribute('aria-pressed') != 'true':
+                    pokeball.click()
+                    print('clicked')
+                    flag = False
+            except Exception as e:
+                time.sleep(1)
+                retry_count += 1
+                print(f'Retry {retry_count}, {e}')
+
     if f'taken in by {name}' in text and claimed != text_raw:
         try:
             text_box = driver.find_element_by_xpath(textbox_xpath)
             text_box.send_keys(random.choice(thank_words))
             time.sleep(0.5)
             text_box.send_keys(Keys.ENTER)
-            # text_box.send_keys(random.choice(emojis))
-            # time.sleep(0.5)
-            # text_box.send_keys(Keys.ENTER)
-            # time.sleep(0.5)
-            # text_box.send_keys(Keys.ENTER)
 
         except Exception as e:
             print('retry', e)
@@ -56,5 +61,6 @@ while True:
         print('=====================')
         print('      Thanked')
         print('=====================')
+        driver.refresh()
         claimed = text_raw
     time.sleep(10)

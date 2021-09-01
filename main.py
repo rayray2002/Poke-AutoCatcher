@@ -171,7 +171,7 @@ class AutoCatcher:
         while True:
             self.try_function(self.send_message, 2, text='!!wondertrade')
             self.send_message('1')
-            time.sleep(1)
+            time.sleep(2)
             name, rarity, CP = self.get_name()
             print(name, rarity, CP)
 
@@ -203,7 +203,7 @@ class AutoCatcher:
                         os.system(f'say "{5 - i}"')
                         time.sleep(1)
 
-            while True and not max_level and bool(self.config['trader']['powerup']):
+            while True and not max_level and int(self.config['trader']['powerup']):
                 self.try_function(self.send_message, 5, text=f'!!powerup {name}')
                 self.send_message(str(self.find_last()))
                 time.sleep(1)
