@@ -44,11 +44,12 @@ while True:
                     print('clicked')
                     flag = False
             except Exception as e:
-                time.sleep(1)
+                time.sleep(0.5)
                 retry_count += 1
                 print(f'Retry {retry_count}, {e}')
 
     if f'taken in by {name}' in text and claimed != text_raw:
+        print('win')
         flag = True
         retry_count = 0
         while flag and retry_count < 5:
