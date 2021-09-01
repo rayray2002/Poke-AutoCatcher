@@ -134,6 +134,7 @@ class AutoCatcher:
         last = len(text)
         limit = 25
         while last >= limit:
+            time.sleep(1)
             next_page = self.driver.find_elements_by_class_name('reactionInner-15NvIl')[-1]
             time.sleep(1)
             next_page.click()
@@ -144,7 +145,7 @@ class AutoCatcher:
             last = len(text) + limit
             limit += 25
 
-        while 'in team' in text[last - 1]:
+        while 'in team' in text[last - limit + 24]:
             last -= 1
         return last
 
@@ -169,9 +170,17 @@ class AutoCatcher:
     def wondertrade(self):
         max_level = False
         while True:
-            self.try_function(self.send_message, 2, text='!!wondertrade')
-            self.send_message('1')
-            time.sleep(2)
+            if max_level:
+                self.try_function(self.send_message, 3, text='!!wondertrade tradelist')
+                time.sleep(1)
+                self.send_message('1')
+                time.sleep(1)
+            else:
+                self.try_function(self.send_message, 3, text='!!wondertrade')
+                time.sleep(0.5)
+                self.send_message('1')
+                time.sleep(1)
+
             name, rarity, CP = self.get_name()
             print(name, rarity, CP)
 
@@ -179,9 +188,14 @@ class AutoCatcher:
             if rarity == 'Legendary' or name in dream:
                 self.send_message(f'!!info {name}')
                 os.system('say "Legendary"')
+                if max_level:
+                    self.send_message(f'!!fortrade remove')
+                    time.sleep(1)
+                    self.send_message('1')
                 return
 
-            elif rarity == 'Rare' or CP >= int(self.config['trader']['CP']):
+            elif (rarity == 'Rare' or CP >= int(self.config['trader']['CP'])) and \
+                    int(self.config['trader']['show_info']):
                 os.system('say "rare"')
                 self.try_function(self.send_message, 5, text=f'!!info {name}')
                 info = self.driver.find_elements_by_class_name('embedDescription-1Cuq9a')[-1].text
@@ -199,23 +213,25 @@ class AutoCatcher:
                 info = self.driver.find_elements_by_class_name('embedDescription-1Cuq9a')[-1].text
                 max_cp = re.search(r'Max CP: (.*)', info).group(1)
                 if int(max_cp) > 2000:
-                    for i in range(5):
-                        os.system(f'say "{5 - i}"')
+                    countdown = int(self.config['trader']['countdown'])
+                    for i in range(countdown):
+                        os.system(f'say "{countdown - i}"')
                         time.sleep(1)
 
-            while True and not max_level and int(self.config['trader']['powerup']):
-                self.try_function(self.send_message, 5, text=f'!!powerup {name}')
-                self.send_message(str(self.find_last()))
-                time.sleep(1)
-                respond = self.driver.find_elements_by_class_name('contents-2mQqc9')[-1].text
-                if 'you do not have enough candy' in respond:
-                    break
-                elif 'cannot powerup any' in respond:
-                    max_level = True
-                    break
+            if not max_level:
+                if not max_level and int(self.config['trader']['powerup']):
+                    self.try_function(self.send_message, 5, text=f'!!powerup {name} max')
+                    time.sleep(1)
+                    self.send_message(str(self.find_last()))
+                    time.sleep(1)
+                    respond = self.driver.find_elements_by_class_name('contents-2mQqc9')[-1].text
+                    if 'cannot powerup any' in respond:
+                        print('Reach Max Level!')
+                        max_level = True
 
-            self.try_function(self.send_message, 2, text=f'!!fortrade add {name}')
-            self.send_message(str(self.find_last()))
+                self.try_function(self.send_message, 2, text=f'!!fortrade add {name}')
+                time.sleep(1)
+                self.send_message(str(self.find_last()))
 
 
 if __name__ == '__main__':

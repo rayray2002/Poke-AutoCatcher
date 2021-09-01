@@ -10,5 +10,3 @@ except Exception as e:
         autoCatcher.driver.quit()
     except:
         pass
-exit()
-

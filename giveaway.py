@@ -49,18 +49,22 @@ while True:
                 print(f'Retry {retry_count}, {e}')
 
     if f'taken in by {name}' in text and claimed != text_raw:
-        try:
-            text_box = driver.find_element_by_xpath(textbox_xpath)
-            text_box.send_keys(random.choice(thank_words))
-            time.sleep(0.5)
-            text_box.send_keys(Keys.ENTER)
-
-        except Exception as e:
-            print('retry', e)
-            break
-        print('=====================')
-        print('      Thanked')
-        print('=====================')
+        flag = True
+        retry_count = 0
+        while flag and retry_count < 5:
+            try:
+                text_box = driver.find_element_by_xpath(textbox_xpath)
+                text_box.send_keys(random.choice(thank_words))
+                time.sleep(0.5)
+                text_box.send_keys(Keys.ENTER)
+                print('=====================')
+                print('      Thanked')
+                print('=====================')
+                flag = False
+            except Exception as e:
+                print('retry', e)
+                retry_count += 1
+                break
         driver.refresh()
         claimed = text_raw
-    time.sleep(10)
+    time.sleep(30)
