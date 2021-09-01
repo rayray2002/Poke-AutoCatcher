@@ -3,8 +3,8 @@ import random
 from main import *
 
 thank_words = ['Ty', 'tysm', 'tyy', 'Tyy']
-# url = 'https://discord.com/channels/723691206332252240/821900041924902912'
-url = 'https://discord.com/channels/881077626666643486/881077626666643489'
+url = 'https://discord.com/channels/723691206332252240/821900041924902912'
+# url = 'https://discord.com/channels/881077626666643486/881077626666643489'
 
 print('Input display name:')
 name = input()
@@ -15,8 +15,8 @@ driver.maximize_window()
 
 textbox_xpath = '//*[@id="app-mount"]/div[2]/div/div[2]/div/div/div/div[2]/div[2]/div[2]/main/form/div[1]/' \
                 'div/div/div[1]/div/div[1]/div[2]'
-textbox_xpath = '//*[@id="app-mount"]/div[2]/div/div[2]/div/div/div/div[2]/div[2]/div[2]/main/form/div/' \
-                'div/div/div[1]/div/div[3]/div[2]'
+# textbox_xpath = '//*[@id="app-mount"]/div[2]/div/div[2]/div/div/div/div[2]/div[2]/div[2]/main/form/div/' \
+#                 'div/div/div[1]/div/div[3]/div[2]'
 
 try:
     WebDriverWait(driver, 60).until(EC.presence_of_element_located((By.XPATH, textbox_xpath)))
