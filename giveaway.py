@@ -62,10 +62,10 @@ while True:
                 print('      Thanked')
                 print('=====================')
                 flag = False
+                claimed = text_raw
             except Exception as e:
                 print('retry', e)
                 retry_count += 1
                 break
         driver.refresh()
-        claimed = text_raw
     time.sleep(30)
