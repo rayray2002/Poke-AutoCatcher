@@ -27,8 +27,11 @@ print('logged in')
 time.sleep(3)
 claimed = None
 while True:
-    text_raw = driver.find_elements_by_class_name('embedDescription-1Cuq9a')[-1]
-    text = text_raw.text
+    try:
+        text_raw = driver.find_elements_by_class_name('embedDescription-1Cuq9a')[-1]
+        text = text_raw.text
+    except:
+        continue
 
     if claimed is None:
         claimed = text_raw
