@@ -49,7 +49,7 @@ while True:
         while flag and retry_count < 5:
             try:
                 pokeball = driver.find_elements_by_class_name('reactionInner-15NvIl')[-1]
-                if pokeball.get_attribute('aria-pressed') != 'true':
+                if pokeball.get_attribute('aria-pressed') != 'true' and 'pokeball' in pokeball.get_attribute('aria-label'):
                     pokeball.click()
                     print('clicked')
                     flag = False
