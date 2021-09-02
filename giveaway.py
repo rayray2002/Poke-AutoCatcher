@@ -26,6 +26,7 @@ except Exception as e:
 print('logged in')
 time.sleep(3)
 claimed = None
+text_box = driver.find_element_by_xpath(textbox_xpath)
 while True:
     try:
         text_raw = driver.find_elements_by_class_name('embedDescription-1Cuq9a')[-1]
@@ -58,7 +59,6 @@ while True:
     if f'taken in by {name}' in text and claimed != text_raw:
         print('win')
         try:
-            text_box = driver.find_element_by_xpath(textbox_xpath)
             text_box.send_keys(random.choice(thank_words))
             time.sleep(0.5)
             text_box.send_keys(Keys.ENTER)
@@ -68,4 +68,5 @@ while True:
         except Exception as e:
             print(e)
         claimed = text_raw
-    time.sleep(30)
+    time.sleep(10)
+    text_box.send_keys(Keys.END)
