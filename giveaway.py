@@ -31,6 +31,7 @@ while True:
     try:
         text_raw = driver.find_elements_by_class_name('embedDescription-1Cuq9a')[-1]
         text = text_raw.text
+        driver.execute_script("window.scrollTo(0, 1000);")
     except:
         continue
 
@@ -69,4 +70,3 @@ while True:
             print(e)
         claimed = text_raw
     time.sleep(1)
-    driver.execute_script("window.scrollTo(0, 1000);")
