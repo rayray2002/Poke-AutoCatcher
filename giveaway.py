@@ -68,5 +68,5 @@ while True:
         except Exception as e:
             print(e)
         claimed = text_raw
-    time.sleep(10)
-    text_box.send_keys(Keys.END)
+    time.sleep(5)
+    driver.execute_script("window.scrollTo(0, 1000);")
