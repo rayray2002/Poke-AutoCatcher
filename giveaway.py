@@ -61,6 +61,7 @@ while True:
     if f'taken in by {name}' in text and claimed != text_raw:
         print('win')
         try:
+            text_box = driver.find_element_by_xpath(textbox_xpath)
             text_box.send_keys(random.choice(thank_words))
             time.sleep(0.5)
             text_box.send_keys(Keys.ENTER)
