@@ -17,6 +17,13 @@ class AutoCatcher:
         self.config.read(path, 'utf8')
         self.textbox_xpath = '//*[@id="app-mount"]/div[2]/div/div[2]/div/div/div/div/div[2]/div[2]/' \
                              'main/form/div[1]/div/div/div[1]/div/div[3]/div[2]/div'
+        self.recreate_localStorage_script = '''
+        const iframe = document.createElement('iframe');
+        document.head.append(iframe);
+        const pd = Object.getOwnPropertyDescriptor(iframe.contentWindow, 'localStorage');
+        iframe.remove();    
+        Object.defineProperty(window, 'localStorage', pd);
+        '''
 
         options = Options()
         options.add_argument('--headless')
@@ -26,17 +33,32 @@ class AutoCatcher:
         self.driver.get(self.config['default']['server_url'])
         self.driver.maximize_window()
 
-        if int(self.config['default']['auto_login']):
+        if os.path.exists('./token.txt'):
+            token = open('./token.txt', 'r').read()
+            self.driver.execute_script(self.recreate_localStorage_script)
+            self.driver.execute_script(f"window.localStorage.setItem('token', '{token}');")
+            self.driver.refresh()
+            self.driver.execute_script(self.recreate_localStorage_script)
+            print('Token login')
+        elif int(self.config['default']['auto_login']):
             self.login_by_txt()
+            print('Auto login')
         else:
-            time.sleep(3)
+            img_xpath = '//*[@id="app-mount"]/div[2]/div/div/div/div/form/div/div/div[3]/div/div/div/div[1]/div[1]/img'
+            try:
+                WebDriverWait(self.driver, 60).until(EC.presence_of_element_located((By.XPATH, img_xpath)))
+            except Exception as e:
+                print(e)
+
             self.driver.save_screenshot('login.png')
             print('QRcode got')
+
         try:
             WebDriverWait(self.driver, 60).until(EC.presence_of_element_located((By.XPATH, self.textbox_xpath)))
         except Exception as e:
             print(e)
 
+        # cv2.destroyAllWindows()
         time.sleep(1)
         try:
             close = self.driver.find_element_by_class_name('close-relY5R')
