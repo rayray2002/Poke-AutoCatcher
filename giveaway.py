@@ -68,7 +68,7 @@ while True:
             print('=====================')
             print('      Thanked')
             print('=====================')
+            claimed = text_raw
         except Exception as e:
             print(e)
-        claimed = text_raw
     time.sleep(0.1)

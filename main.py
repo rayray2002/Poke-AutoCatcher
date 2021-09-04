@@ -3,6 +3,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.chrome.options import Options
 import time
 import re
 import os
@@ -17,13 +18,20 @@ class AutoCatcher:
         self.textbox_xpath = '//*[@id="app-mount"]/div[2]/div/div[2]/div/div/div/div/div[2]/div[2]/' \
                              'main/form/div[1]/div/div/div[1]/div/div[3]/div[2]/div'
 
-        self.driver = webdriver.Chrome(executable_path=self.config['default']['driver_path'])
+        options = Options()
+        options.add_argument('--headless')
+        options.add_argument("--window-size=1920,1080")
+        # options.add_argument("--screenshot")
+        self.driver = webdriver.Chrome(executable_path=self.config['default']['driver_path'], options=options)
         self.driver.get(self.config['default']['server_url'])
         self.driver.maximize_window()
 
         if int(self.config['default']['auto_login']):
             self.login_by_txt()
-
+        else:
+            time.sleep(3)
+            self.driver.save_screenshot('login.png')
+            print('QRcode got')
         try:
             WebDriverWait(self.driver, 60).until(EC.presence_of_element_located((By.XPATH, self.textbox_xpath)))
         except Exception as e:
