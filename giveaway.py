@@ -4,19 +4,43 @@ from main import *
 
 thank_words = ['Ty', 'tysm', 'tyy', 'Tyy']
 url = 'https://discord.com/channels/723691206332252240/821900041924902912'
-# url = 'https://discord.com/channels/881077626666643486/881077626666643489'
 
 print('Input display name:')
 name = input()
 
-driver = webdriver.Chrome(executable_path='./chromedriver')
+options = Options()
+options.add_argument('--headless')
+options.add_argument("--window-size=1920,1080")
+driver = webdriver.Chrome(executable_path='./chromedriver', options=options)
 driver.get(url)
 driver.maximize_window()
 
 textbox_xpath = '//*[@id="app-mount"]/div[2]/div/div[2]/div/div/div/div[2]/div[2]/div[2]/main/form/div[1]/' \
                 'div/div/div[1]/div/div[1]/div[2]'
-# textbox_xpath = '//*[@id="app-mount"]/div[2]/div/div[2]/div/div/div/div[2]/div[2]/div[2]/main/form/div/' \
-#                 'div/div/div[1]/div/div[3]/div[2]'
+recreate_localStorage_script = '''
+        const iframe = document.createElement('iframe');
+        document.head.append(iframe);
+        const pd = Object.getOwnPropertyDescriptor(iframe.contentWindow, 'localStorage');
+        iframe.remove();    
+        Object.defineProperty(window, 'localStorage', pd);
+        '''
+
+if os.path.exists('./token.txt'):
+    token = open('./token.txt', 'r').read()
+    driver.execute_script(recreate_localStorage_script)
+    driver.execute_script(f"window.localStorage.setItem('token', '{token}');")
+    driver.refresh()
+    driver.execute_script(recreate_localStorage_script)
+    print('Token login')
+else:
+    img_xpath = '//*[@id="app-mount"]/div[2]/div/div/div/div/form/div/div/div[3]/div/div/div/div[1]/div[1]/img'
+    try:
+        WebDriverWait(driver, 60).until(EC.presence_of_element_located((By.XPATH, img_xpath)))
+    except Exception as e:
+        print(e)
+
+    driver.save_screenshot('login.png')
+    print('QRcode got')
 
 try:
     WebDriverWait(driver, 60).until(EC.presence_of_element_located((By.XPATH, textbox_xpath)))
@@ -49,7 +73,8 @@ while True:
         while flag and retry_count < 5:
             try:
                 pokeball = driver.find_elements_by_class_name('reactionInner-15NvIl')[-1]
-                if pokeball.get_attribute('aria-pressed') != 'true' and 'pokeball' in pokeball.get_attribute('aria-label'):
+                if pokeball.get_attribute('aria-pressed') != 'true' and 'pokeball' in pokeball.get_attribute(
+                        'aria-label'):
                     pokeball.click()
                     print('clicked')
                     flag = False
