@@ -67,7 +67,7 @@ while True:
             count = 0
             while retry_count < 5 and count < 3:
                 try:
-                    pokeball = driver.find_elements_by_class_name('reactionInner-15NvIl')[-1]
+                    pokeball = driver.find_element_by_id(m['id']).find_elements_by_class_name('reactionInner-15NvIl')[-1]
                     if 'pokeball' in pokeball.get_attribute(
                             'aria-label'):
                         time.sleep(0.1)
