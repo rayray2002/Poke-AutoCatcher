@@ -1,4 +1,7 @@
 import random
+from bs4 import BeautifulSoup
+from selenium.webdriver.common.action_chains import ActionChains
+
 
 from main import *
 
@@ -49,51 +52,54 @@ except Exception as e:
 
 print('logged in')
 time.sleep(3)
-claimed = None
 text_box = driver.find_element_by_xpath(textbox_xpath)
+giveaway = []
 while True:
+    soup = BeautifulSoup(driver.page_source, 'html.parser')
+    messages = soup.select('div.message-2qnXI6')
+    for m in messages[-5:]:
+        if 'given away' in m.text and m['id'] not in giveaway:
+            giveaway.append(m['id'])
+            print('new giveaway!!')
+            print(m['id'])
+
+            retry_count = 0
+            count = 0
+            while retry_count < 5 and count < 3:
+                try:
+                    pokeball = driver.find_elements_by_class_name('reactionInner-15NvIl')[-1]
+                    if 'pokeball' in pokeball.get_attribute(
+                            'aria-label'):
+                        time.sleep(0.1)
+                        ActionChains(driver).move_to_element(pokeball).click(pokeball).perform()
+                        print('clicked')
+                        count += 1
+                except Exception as e:
+                    time.sleep(0.5)
+                    retry_count += 1
+                    print(f'Retry {retry_count}, {e}')
+
+    print(giveaway)
+    for i in giveaway:
+        give = soup.find('div', id=i)
+        if f'taken in by {name}' in give.text:
+            print('win')
+            try:
+                text_box = driver.find_element_by_xpath(textbox_xpath)
+                text_box.send_keys(random.choice(thank_words))
+                time.sleep(0.5)
+                text_box.send_keys(Keys.ENTER)
+                print('=====================')
+                print('      Thanked')
+                print('=====================')
+            except Exception as e:
+                print(e)
+        elif 'taken in by' in give.text:
+            giveaway.remove(i)
+            print(f'{i} removed')
+
     try:
-        text_raw = driver.find_elements_by_class_name('embedDescription-1Cuq9a')[-1]
-        text = text_raw.text
         driver.execute_script("window.scrollTo(0, 1000);")
         text_box.send_keys(Keys.PAGE_DOWN)
-    except:
-        continue
-
-    if claimed is None:
-        claimed = text_raw
-
-    if 'given away' in text:
-        print('new giveaway!!')
-        time.sleep(1)
-        pokeball = driver.find_elements_by_class_name('reactionInner-15NvIl')[-1]
-
-        flag = True
-        retry_count = 0
-        while flag and retry_count < 5:
-            try:
-                pokeball = driver.find_elements_by_class_name('reactionInner-15NvIl')[-1]
-                if pokeball.get_attribute('aria-pressed') != 'true' and 'pokeball' in pokeball.get_attribute(
-                        'aria-label'):
-                    pokeball.click()
-                    print('clicked')
-                    flag = False
-            except Exception as e:
-                time.sleep(0.5)
-                retry_count += 1
-                print(f'Retry {retry_count}, {e}')
-
-    if f'taken in by {name}' in text and claimed != text_raw:
-        print('win')
-        try:
-            text_box = driver.find_element_by_xpath(textbox_xpath)
-            text_box.send_keys(random.choice(thank_words))
-            time.sleep(0.5)
-            text_box.send_keys(Keys.ENTER)
-            print('=====================')
-            print('      Thanked')
-            print('=====================')
-            claimed = text_raw
-        except Exception as e:
-            print(e)
-    time.sleep(0.1)
+    finally:
+        time.sleep(0.1)
