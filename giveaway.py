@@ -84,6 +84,7 @@ while True:
         give = soup.find('div', id=i)
         if f'taken in by {name}' in give.text:
             print('win')
+            giveaway.remove(i)
             try:
                 text_box = driver.find_element_by_xpath(textbox_xpath)
                 text_box.send_keys(random.choice(thank_words))
