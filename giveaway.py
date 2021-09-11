@@ -55,6 +55,7 @@ print('logged in')
 time.sleep(3)
 text_box = driver.find_element_by_xpath(textbox_xpath)
 giveaway = []
+
 while True:
     soup = BeautifulSoup(driver.page_source, 'html.parser')
     messages = soup.select('div.message-2qnXI6')
@@ -84,7 +85,9 @@ while True:
     print(giveaway)
     for i in giveaway:
         give = soup.find('div', id=i)
-        if f'taken in by {name}' in give.text:
+        if not give:
+            giveaway.remove(i)
+        elif f'taken in by {name}' in give.text:
             print('win')
             giveaway.remove(i)
             try:
