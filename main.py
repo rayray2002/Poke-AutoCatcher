@@ -164,13 +164,13 @@ class AutoCatcher:
         last = len(text)
         limit = 25
         while last >= limit:
-            time.sleep(1)
+            time.sleep(0.5)
             next_page = self.driver.find_elements_by_class_name('reactionInner-15NvIl')[-1]
-            time.sleep(1)
+            time.sleep(0.5)
             next_page.click()
-            time.sleep(1)
+            time.sleep(0.5)
             next_page.click()
-            time.sleep(1)
+            time.sleep(0.5)
             text = self.driver.find_elements_by_class_name('embedDescription-1Cuq9a')[-1].text.split('\n')
             last = len(text) + limit
             limit += 25

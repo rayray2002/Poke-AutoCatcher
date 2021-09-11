@@ -57,7 +57,7 @@ giveaway = []
 while True:
     soup = BeautifulSoup(driver.page_source, 'html.parser')
     messages = soup.select('div.message-2qnXI6')
-    for m in messages[-5:]:
+    for m in messages[-15:]:
         if 'given away' in m.text and m['id'] not in giveaway:
             giveaway.append(m['id'])
             print('new giveaway!!')
