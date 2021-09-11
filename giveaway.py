@@ -2,7 +2,6 @@ import random
 from bs4 import BeautifulSoup
 from selenium.webdriver.common.action_chains import ActionChains
 
-
 from main import *
 
 thank_words = ['Ty', 'tysm', 'tyy', 'Tyy']
@@ -57,7 +56,9 @@ giveaway = []
 while True:
     soup = BeautifulSoup(driver.page_source, 'html.parser')
     messages = soup.select('div.message-2qnXI6')
-    for m in messages[-15:]:
+    for m in reversed(messages):
+        if m['id'] in giveaway:
+            break
         if 'given away' in m.text and m['id'] not in giveaway:
             giveaway.append(m['id'])
             print('new giveaway!!')
@@ -67,7 +68,8 @@ while True:
             count = 0
             while retry_count < 5 and count < 3:
                 try:
-                    pokeball = driver.find_element_by_id(m['id']).find_elements_by_class_name('reactionInner-15NvIl')[-1]
+                    pokeball = driver.find_element_by_id(m['id']).find_elements_by_class_name('reactionInner-15NvIl')[
+                        -1]
                     if 'pokeball' in pokeball.get_attribute(
                             'aria-label'):
                         time.sleep(0.1)
