@@ -26,6 +26,7 @@ class AutoCatcher:
         '''
 
         options = Options()
+        options.add_argument('log-level=3')
         options.add_argument('--headless')
         options.add_argument("--window-size=1920,1080")
         # options.add_argument("--screenshot")
@@ -200,7 +201,7 @@ class AutoCatcher:
     def wondertrade(self):
         max_level = False
         while True:
-            if max_level:
+            if max_level or int(self.config['trader']['powerup']):
                 self.try_function(self.send_message, 3, text='!!wondertrade tradelist')
                 time.sleep(1)
                 self.send_message('1')

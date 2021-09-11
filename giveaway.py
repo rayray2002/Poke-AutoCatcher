@@ -4,13 +4,15 @@ from selenium.webdriver.common.action_chains import ActionChains
 
 from main import *
 
-thank_words = ['Ty', 'tysm', 'tyy', 'Tyy']
-url = 'https://discord.com/channels/723691206332252240/821900041924902912'
-
-print('Input display name:')
-name = input()
+config = configparser.ConfigParser()
+config.read('config.ini', 'utf8')
+giveaway = config['giveaway']
+url = giveaway['url']
+name = giveaway['display_name']
+thank_words = giveaway['thank_words'].split(',')
 
 options = Options()
+options.add_argument('log-level=3')
 options.add_argument('--headless')
 options.add_argument("--window-size=1920,1080")
 driver = webdriver.Chrome(executable_path='./chromedriver', options=options)
@@ -68,10 +70,8 @@ while True:
             count = 0
             while retry_count < 5 and count < 3:
                 try:
-                    pokeball = driver.find_element_by_id(m['id']).find_elements_by_class_name('reactionInner-15NvIl')[
-                        -1]
-                    if 'pokeball' in pokeball.get_attribute(
-                            'aria-label'):
+                    pokeball = driver.find_element_by_id(m['id']).find_elements_by_class_name('reactionInner-15NvIl')[-1]
+                    if 'pokeball' in pokeball.get_attribute('aria-label'):
                         time.sleep(0.1)
                         ActionChains(driver).move_to_element(pokeball).click(pokeball).perform()
                         print('clicked')
