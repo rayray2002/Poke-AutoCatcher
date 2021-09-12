@@ -197,7 +197,7 @@ class AutoCatcher:
         return name, rarity, CP
 
     def wondertrade(self):
-        max_level = int(self.config['trader']['powerup'])
+        max_level = False if int(self.config['trader']['powerup']) else True
         while True:
             if max_level:
                 self.try_function(self.send_message, 3, text='!!wondertrade tradelist')
