@@ -197,9 +197,9 @@ class AutoCatcher:
         return name, rarity, CP
 
     def wondertrade(self):
-        max_level = False
+        max_level = int(self.config['trader']['powerup'])
         while True:
-            if max_level or int(self.config['trader']['powerup']):
+            if max_level:
                 self.try_function(self.send_message, 3, text='!!wondertrade tradelist')
                 time.sleep(1)
                 self.send_message('1')
@@ -248,15 +248,14 @@ class AutoCatcher:
                         time.sleep(1)
 
             if not max_level:
-                if not max_level and int(self.config['trader']['powerup']):
-                    self.try_function(self.send_message, 5, text=f'!!powerup {name} max')
-                    time.sleep(1)
-                    self.send_message(str(self.find_last()))
-                    time.sleep(1)
-                    respond = self.driver.find_elements_by_class_name('contents-2mQqc9')[-1].text
-                    if 'cannot powerup any' in respond:
-                        print('Reach Max Level!')
-                        max_level = True
+                self.try_function(self.send_message, 5, text=f'!!powerup {name} max')
+                time.sleep(1)
+                self.send_message(str(self.find_last()))
+                time.sleep(1)
+                respond = self.driver.find_elements_by_class_name('contents-2mQqc9')[-1].text
+                if 'cannot powerup any' in respond:
+                    print('Reach Max Level!')
+                    max_level = 1
 
                 self.try_function(self.send_message, 2, text=f'!!fortrade add {name}')
                 time.sleep(1)
