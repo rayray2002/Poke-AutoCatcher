@@ -163,13 +163,13 @@ class AutoCatcher:
         last = len(text)
         limit = 25
         while last >= limit:
-            time.sleep(0.5)
+            time.sleep(0.3)
             next_page = self.driver.find_elements_by_class_name('reactionInner-15NvIl')[-1]
-            time.sleep(0.5)
+            time.sleep(0.3)
             next_page.click()
-            time.sleep(0.5)
+            time.sleep(0.3)
             next_page.click()
-            time.sleep(0.5)
+            time.sleep(0.3)
             text = self.driver.find_elements_by_class_name('embedDescription-1Cuq9a')[-1].text.split('\n')
             last = len(text) + limit
             limit += 25
@@ -250,7 +250,8 @@ class AutoCatcher:
             if not max_level:
                 self.try_function(self.send_message, 5, text=f'!!powerup {name} max')
                 time.sleep(1)
-                self.send_message(str(self.find_last()))
+                last = str(self.find_last())
+                self.send_message(last)
                 time.sleep(1)
                 respond = self.driver.find_elements_by_class_name('contents-2mQqc9')[-1].text
                 if 'cannot powerup any' in respond:
@@ -259,7 +260,7 @@ class AutoCatcher:
 
                 self.try_function(self.send_message, 2, text=f'!!fortrade add {name}')
                 time.sleep(1)
-                self.send_message(str(self.find_last()))
+                self.send_message(last)
 
 
 if __name__ == '__main__':
