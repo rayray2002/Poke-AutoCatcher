@@ -21,8 +21,8 @@ driver = webdriver.Chrome(executable_path=config['default']['driver_path'], opti
 driver.get(url)
 driver.maximize_window()
 
-textbox_xpath = '//*[@id="app-mount"]/div[2]/div/div[2]/div/div/div/div[2]/div[2]/div[2]/main/form/div[1]/' \
-                'div/div/div[1]/div/div[1]/div[2]'
+textbox_xpath = '//*[@id="app-mount"]/div[2]/div/div[2]/div/div/div/div/div[2]/div[2]/main/' \
+                'form/div[1]/div/div/div[1]/div/div[1]/div[2]/div'
 recreate_localStorage_script = '''
         const iframe = document.createElement('iframe');
         document.head.append(iframe);
@@ -60,7 +60,7 @@ giveaway = []
 
 while True:
     soup = BeautifulSoup(driver.page_source, 'html.parser')
-    messages = soup.select('div.message-2qnXI6')
+    messages = soup.select('li.messageListItem-1-jvGY')
     for m in reversed(messages):
         if m['id'] in giveaway:
             break

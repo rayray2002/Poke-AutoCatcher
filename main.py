@@ -69,7 +69,7 @@ class AutoCatcher:
         channel = self.driver.find_element_by_link_text(self.config['default']['channel'])
         channel.click()
 
-        self.send_message('Logged in', log=True)
+        print("logged in")
 
     def login_by_txt(self):
         email = self.config['default']['email']
