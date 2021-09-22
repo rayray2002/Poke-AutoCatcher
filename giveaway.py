@@ -86,7 +86,7 @@ while True:
 
     print(giveaway)
     for i in giveaway:
-        give = soup.find('div', id=i)
+        give = soup.find('li', id=i)
         if not give:
             giveaway.remove(i)
         elif f'taken in by {name}' in give.text:
