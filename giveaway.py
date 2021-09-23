@@ -109,5 +109,7 @@ while True:
     try:
         driver.execute_script("window.scrollTo(0, 1000);")
         text_box.send_keys(Keys.PAGE_DOWN)
+    except:
+        pass
     finally:
         time.sleep(5)
