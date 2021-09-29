@@ -23,9 +23,9 @@ try:
         time.sleep(60)
         print(datetime.datetime.now())
 
-except:
-    try:
-        autoCatcher.driver.quit()
-    except:
-        pass
-exit()
+except Exception as e:
+    print('error', e)
+    input()
+except KeyboardInterrupt:
+    pass
+

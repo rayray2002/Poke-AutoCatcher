@@ -27,7 +27,7 @@ class AutoCatcher:
 
         options = Options()
         options.add_argument('log-level=3')
-        options.add_argument('--headless')
+        # options.add_argument('--headless')
         options.add_argument("--window-size=1920,1080")
         self.driver = webdriver.Chrome(executable_path=self.config['default']['driver_path'], options=options)
         self.driver.get(self.config['default']['server_url'])
@@ -60,8 +60,16 @@ class AutoCatcher:
 
         time.sleep(1)
         try:
+            nitro_ad = self.driver.find_element_by_xpath('//*[@id="app-mount"]/div[5]/div[2]/div')
+            nitro_ad.send_keys(Keys.ESCAPE)
+            time.sleep(1)
+        except Exception as e:
+            print('no ads', e)
+
+        try:
             close = self.driver.find_element_by_class_name('close-relY5R')
             close.click()
+            time.sleep(1)
         except Exception as e:
             print('no close button', e)
 
@@ -123,7 +131,7 @@ class AutoCatcher:
             ball_amount = int(self.config['catcher'][ball])
             # print(current)
             if current < ball_amount:
-                self.try_function(self.send_message, 5, text=f"!!buy {ball} ball {ball_amount}", log=True)
+                self.try_function(self.send_message, 5, text=f"!!buy {ball} ball {ball_amount - current}", log=True)
                 time.sleep(1)
         self.send_message('Bag checked', log=True)
 
