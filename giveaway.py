@@ -108,6 +108,7 @@ while True:
 
     try:
         driver.execute_script("window.scrollTo(0, 1000);")
+        text_box = driver.find_element_by_xpath(textbox_xpath)
         text_box.send_keys(Keys.PAGE_DOWN)
     except:
         pass
