@@ -27,7 +27,7 @@ class AutoCatcher:
 
         options = Options()
         options.add_argument('log-level=3')
-        # options.add_argument('--headless')
+        options.add_argument('--headless')
         options.add_argument("--window-size=1920,1080")
         self.driver = webdriver.Chrome(executable_path=self.config['default']['driver_path'], options=options)
         self.driver.get(self.config['default']['server_url'])
