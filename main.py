@@ -27,7 +27,7 @@ class AutoCatcher:
 
         options = Options()
         options.add_argument('log-level=3')
-        options.add_argument('--headless')
+        # options.add_argument('--headless')
         options.add_argument("--window-size=1920,1080")
         self.driver = webdriver.Chrome(executable_path=self.config['default']['driver_path'], options=options)
         self.driver.get(self.config['default']['server_url'])
@@ -121,8 +121,18 @@ class AutoCatcher:
         if log:
             print(text)
 
+    def send_command(self, text, log=False):
+        text_box = self.driver.find_element_by_xpath(self.textbox_xpath)
+        text_box.send_keys(text)
+        time.sleep(0.5)
+        text_box.send_keys(Keys.ENTER)
+        time.sleep(0.2)
+        text_box.send_keys(Keys.ENTER)
+        if log:
+            print(text)
+
     def bag_check(self, timeout):
-        self.try_function(self.send_message, timeout, text='!!bag')
+        self.try_function(self.send_command, timeout, text='/inventory')
         time.sleep(2)
         bag = self.driver.find_elements_by_class_name('embedDescription-1Cuq9a')[-1].text
         ball_order = ['Poke', 'Great', 'Ultra', 'Master']
@@ -131,17 +141,18 @@ class AutoCatcher:
             ball_amount = int(self.config['catcher'][ball])
             # print(current)
             if current < ball_amount:
-                self.try_function(self.send_message, 5, text=f"!!buy {ball} ball {ball_amount - current}", log=True)
+                self.try_function(self.send_command, 5, text=f"/buy item:{ball} Ball amount:{ball_amount - current}", log=True)
+                # /buy item:Poke Ball amount:1
                 time.sleep(1)
         self.send_message('Bag checked', log=True)
 
     def catcher(self):
-        self.bag_check(60)
-        self.try_function(self.send_message, 60, text='!!pokestop')
+        # self.bag_check(60)
+        self.try_function(self.send_command, 60, text='/pokestop')
         time.sleep(3)
 
         while True:
-            self.try_function(self.send_message, 5, text='!!p')
+            self.try_function(self.send_command, 5, text='/pokemon')
             print('New pokemon')
             time.sleep(3)
 
@@ -150,21 +161,20 @@ class AutoCatcher:
                 self.send_message('No rolls left', log=True)
                 break
 
-            for i in range(3):
-                flag = True
-                retry_count = 0
-                while flag and retry_count < 10:
-                    try:
-                        pokeball = self.driver.find_elements_by_class_name('reactionInner-15NvIl')[-2]
-                        pokeball.click()
-                        print('Caught')
-                        flag = False
-                    except Exception as e:
-                        time.sleep(0.5)
-                        retry_count += 1
-                        print(f'Retry {retry_count}, {e}')
-                time.sleep(1)
-            time.sleep(3)
+            flag = True
+            retry_count = 0
+            while flag and retry_count < 10:
+                try:
+                    pokeball = self.driver.find_elements_by_class_name('component-1IAYeC')[-2]
+                    pokeball.click()
+                    print('Caught')
+                    flag = False
+                except Exception as e:
+                    time.sleep(0.5)
+                    retry_count += 1
+                    print(f'Retry {retry_count}, {e}')
+
+            time.sleep(5)
 
     def find_last(self):
         text = self.driver.find_elements_by_class_name('embedDescription-1Cuq9a')[-1].text.split('\n')
@@ -192,12 +202,14 @@ class AutoCatcher:
         rarity = ''
         CP = 0
         while flag:
+            title = self.driver.find_elements_by_class_name('embedTitle-3OXDkz')[-1].text
             text = self.driver.find_elements_by_class_name('embedDescription-1Cuq9a')[-1].text
-            m = re.search(r'(.*) \((.*)\) \(CP: (.*)\)', text)
+            m_title = re.search(r'received (.*) CP: (.*)!', title)
+            m_text = re.search(r'Rarity:(.*)', text)
             try:
-                name = m.group(1).strip()
-                rarity = m.group(2).strip()
-                CP = int(m.group(3).strip())
+                name = m_title.group(1).strip()
+                rarity = m_text.group(1).strip()
+                CP = int(m_title.group(2).strip())
                 flag = 0
             except AttributeError:
                 print('retry: get name')
@@ -207,28 +219,22 @@ class AutoCatcher:
     def wondertrade(self):
         max_level = False if int(self.config['trader']['powerup']) else True
         while True:
+            self.try_function(self.send_command, 3, text='/wondertrade')
             if max_level:
-                self.try_function(self.send_message, 3, text='!!wondertrade tradelist')
-                time.sleep(1)
-                self.send_message('1')
-                time.sleep(1)
+                time.sleep(2)
             else:
-                self.try_function(self.send_message, 3, text='!!wondertrade')
                 time.sleep(0.5)
-                self.send_message('1')
-                time.sleep(1)
 
             name, rarity, CP = self.get_name()
             print(name, rarity, CP)
 
             dream = self.config['trader']['dream'].split(',')
-            if rarity == 'Legendary' or name in dream:
-                self.send_message(f'!!info {name}')
+            if rarity in ['Legendary', 'Mythical'] or name in dream:
+                # self.send_command(f'/info {name}')
                 os.system('say "Legendary"')
                 if max_level:
-                    self.send_message(f'!!fortrade remove')
+                    self.send_command(f'/fortrade remove')
                     time.sleep(1)
-                    self.send_message('1')
                 return
 
             elif (rarity == 'Rare' or CP >= int(self.config['trader']['CP'])) and \
