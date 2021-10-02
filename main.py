@@ -27,7 +27,8 @@ class AutoCatcher:
 
         options = Options()
         options.add_argument('log-level=3')
-        options.add_argument('--headless')
+        if int(self.config['default']['headless']):
+            options.add_argument('--headless')
         options.add_argument("--window-size=1920,1080")
         self.driver = webdriver.Chrome(executable_path=self.config['default']['driver_path'], options=options)
         self.driver.get(self.config['default']['server_url'])
@@ -131,6 +132,20 @@ class AutoCatcher:
         if log:
             print(text)
 
+    def buy_ball(self, item, amount):
+        text_box = self.driver.find_element_by_xpath(self.textbox_xpath)
+        text_box.send_keys("/buy")
+        time.sleep(0.5)
+        text_box.send_keys(Keys.ENTER)
+
+        text_box.send_keys(item)
+        time.sleep(0.5)
+        text_box.send_keys(Keys.ENTER)
+
+        text_box.send_keys(str(amount))
+        time.sleep(0.5)
+        text_box.send_keys(Keys.ENTER)
+
     def bag_check(self, timeout):
         self.try_function(self.send_command, timeout, text='/inventory')
         time.sleep(2)
@@ -141,13 +156,12 @@ class AutoCatcher:
             ball_amount = int(self.config['catcher'][ball])
             # print(current)
             if current < ball_amount:
-                self.try_function(self.send_command, 5, text=f"/buy item:{ball} Ball amount:{ball_amount - current}", log=True)
-                # /buy item:Poke Ball amount:1
+                self.buy_ball(f"{ball} Ball", ball_amount - current)
                 time.sleep(1)
         self.send_message('Bag checked', log=True)
 
     def catcher(self):
-        # self.bag_check(60)
+        self.bag_check(60)
         self.try_function(self.send_command, 60, text='/pokestop')
         time.sleep(3)
 
