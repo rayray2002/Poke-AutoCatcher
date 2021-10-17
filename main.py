@@ -152,8 +152,12 @@ class AutoCatcher:
         bag = self.driver.find_elements_by_class_name('embedDescription-1Cuq9a')[-1].text
         ball_order = ['Poke', 'Great', 'Ultra', 'Master']
         for ball in ball_order:
-            current = int(re.search(rf'x(\d*) {ball}', bag).group(1))
             ball_amount = int(self.config['catcher'][ball])
+            match = re.search(rf'x(\d*) {ball}', bag)
+            try:
+                current = int(match.group(1))
+            except AttributeError:
+                current = 0
             # print(current)
             if current < ball_amount:
                 self.buy_ball(f"{ball} Ball", ball_amount - current)
