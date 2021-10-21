@@ -3,7 +3,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.firefox.options import Options
+from selenium.webdriver.chrome.options import Options
 import time
 import re
 import os
@@ -33,7 +33,7 @@ class AutoCatcher:
         if int(self.config['default']['headless']):
             options.add_argument('--headless')
         options.add_argument("--window-size=1920,1080")
-        self.driver = webdriver.Firefox(executable_path=self.config['default']['driver_path'], options=options)
+        self.driver = webdriver.Chrome(executable_path=self.config['default']['driver_path'], options=options)
         self.driver.get(url)
         self.driver.maximize_window()
 
