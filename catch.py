@@ -14,7 +14,13 @@ with open('token.txt', 'r') as users:
 for user in users:
     name, token = user.split(':')
     present = datetime.now()
-    catcher = AutoCatcher(config, config['default']['server_url'], token)
+
+    try:
+        catcher = AutoCatcher(config, config['default']['server_url'], token)
+    except Exception as e:
+        print(f"Error on {name}: {e}")
+        continue
+
     catcher.send_message(f'{name} starts catching at {present.strftime("%H:%M:%S")}', True)
 
     flag = True
