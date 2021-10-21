@@ -36,4 +36,5 @@ for user in users:
 
     catcher.quit()
 
+print('Exit')
 display.stop()
