@@ -1,3 +1,5 @@
+#!/sbin/python
+
 from driver import *
 from pyvirtualdisplay import Display
 from datetime import datetime
