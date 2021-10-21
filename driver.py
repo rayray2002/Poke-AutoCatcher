@@ -4,6 +4,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.action_chains import ActionChains
 import time
 import re
 import os
@@ -81,6 +82,7 @@ class AutoCatcher:
         # channel = self.driver.find_element_by_link_text(self.config['default']['channel'])
         # channel.click()
 
+        self.action = ActionChains(self.driver)
         print("logged in")
 
     def login_by_txt(self):
@@ -119,9 +121,11 @@ class AutoCatcher:
 
     def send_message(self, text, log=False):
         text_box = self.driver.find_element_by_xpath(textbox_xpath)
-        text_box.send_keys(text)
+        # text_box.send_keys(text)
+        self.action.send_keys(text).perform()
         time.sleep(0.5)
-        text_box.send_keys(Keys.ENTER)
+        # text_box.send_keys(Keys.ENTER)
+        self.action.send_keys(Keys.ENTER).perform()
         if log:
             print(text)
 
