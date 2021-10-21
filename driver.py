@@ -36,6 +36,7 @@ class AutoCatcher:
         options.add_argument("--window-size=1920,1080")
         options.add_argument('--no-sandbox')
         options.add_argument('--disable-dev-shm-usage')
+        options.add_argument("--remote-debugging-port=9222")
         self.driver = webdriver.Chrome(executable_path=self.config['default']['driver_path'], options=options)
         self.driver.get(url)
         self.driver.maximize_window()
