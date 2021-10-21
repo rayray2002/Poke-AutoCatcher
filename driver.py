@@ -121,11 +121,12 @@ class AutoCatcher:
 
     def send_message(self, text, log=False):
         text_box = self.driver.find_element_by_xpath(textbox_xpath)
-        # text_box.send_keys(text)
-        self.action.send_keys(text).perform()
+        text_box.click()
+        text_box.send_keys(text)
+        # self.action.send_keys(text).perform()
         time.sleep(0.5)
-        # text_box.send_keys(Keys.ENTER)
-        self.action.send_keys(Keys.ENTER).perform()
+        text_box.send_keys(Keys.ENTER)
+        # self.action.send_keys(Keys.ENTER).perform()
         if log:
             print(text)
 
