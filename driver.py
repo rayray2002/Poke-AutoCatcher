@@ -76,7 +76,7 @@ class AutoCatcher:
             close.click()
             time.sleep(1)
         except Exception as e:
-            print('no close button', e)
+            print('No close button')
 
         # time.sleep(1)
         # channel = self.driver.find_element_by_link_text(self.config['default']['channel'])
@@ -180,7 +180,7 @@ class AutoCatcher:
         while True:
             self.try_function(self.send_command, 5, text='/pokemon')
             print('New pokemon')
-            time.sleep(3)
+            time.sleep(2)
 
             respond = self.driver.find_elements_by_class_name('contents-2mQqc9')[-1].text
             if 'no rolls left' in respond or 'Bot Traffic' in respond:
@@ -200,7 +200,7 @@ class AutoCatcher:
                     retry_count += 1
                     print(f'Retry {retry_count}, {e}')
 
-            time.sleep(5)
+            time.sleep(3)
 
     def find_last(self):
         text = self.driver.find_elements_by_class_name('embedDescription-1Cuq9a')[-1].text.split('\n')
