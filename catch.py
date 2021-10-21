@@ -32,6 +32,7 @@ for user in users:
             flag = False
         except Exception as e:
             print(e)
+
     catcher.quit()
 
 display.stop()

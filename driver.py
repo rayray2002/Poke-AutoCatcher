@@ -303,6 +303,7 @@ class AutoCatcher:
                 self.send_message(last)
 
     def quit(self):
+        self.driver.close()
         self.driver.quit()
 
 
