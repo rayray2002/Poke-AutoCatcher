@@ -1,11 +1,7 @@
 #!/sbin/python
 
 from driver import *
-from pyvirtualdisplay import Display
 from datetime import datetime
-
-display = Display(visible=False, size=(1920, 1080))
-display.start()
 
 config = configparser.ConfigParser()
 config.read('config.ini', 'utf8')
@@ -37,4 +33,3 @@ for user in users:
     catcher.quit()
 
 print('Exit')
-display.stop()

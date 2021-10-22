@@ -5,6 +5,8 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.action_chains import ActionChains
+from pyvirtualdisplay import Display
+
 import time
 import re
 import os
@@ -25,9 +27,10 @@ textbox_xpath = '//*[@id="app-mount"]/div[2]/div/div[2]/div/div/div/div/div[2]/d
 class AutoCatcher:
 
     def __init__(self, config, url, token=None):
-        # self.config = configparser.ConfigParser()
-        # self.config.read(path, 'utf8')
         self.config = config
+
+        self.display = Display(visible=False, size=(1920, 1080))
+        self.display.start()
 
         options = Options()
         options.add_argument('log-level=3')
@@ -37,6 +40,7 @@ class AutoCatcher:
         options.add_argument('--no-sandbox')
         options.add_argument('--disable-dev-shm-usage')
         options.add_argument("--remote-debugging-port=9222")
+
         self.driver = webdriver.Chrome(executable_path=self.config['default']['driver_path'], options=options)
         self.driver.get(url)
         self.driver.maximize_window()
@@ -308,6 +312,7 @@ class AutoCatcher:
     def quit(self):
         self.driver.close()
         self.driver.quit()
+        self.display.stop()
 
 
 if __name__ == '__main__':
@@ -323,5 +328,3 @@ if __name__ == '__main__':
 
     for catcher in catchers:
         catcher.quit()
-
-    # autoCatcher.wondertrade()
