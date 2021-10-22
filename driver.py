@@ -65,7 +65,8 @@ class AutoCatcher:
             print('QRcode got')
 
         try:
-            WebDriverWait(self.driver, 60).until(EC.presence_of_element_located((By.XPATH, textbox_xpath)))
+            # WebDriverWait(self.driver, 60).until(EC.presence_of_element_located((By.XPATH, textbox_xpath)))
+            WebDriverWait(self.driver, 30).until(EC.presence_of_element_located((By.CLASS_NAME, 'textArea-12jD-V')))
         except Exception as e:
             print(e)
 
@@ -127,7 +128,9 @@ class AutoCatcher:
             self.try_function(func, timeout, **kwargs)
 
     def send_message(self, text, log=False):
-        text_box = self.driver.find_element_by_xpath(textbox_xpath)
+        # text_box = self.driver.find_element_by_xpath(textbox_xpath)
+        text_box = self.driver.find_element_by_class_name('textArea-12jD-V')
+        text_box = text_box.find_element_by_xpath('./div[2]/div')
         text_box.click()
         text_box.send_keys(text)
         # self.action.send_keys(text).perform()
@@ -138,7 +141,8 @@ class AutoCatcher:
             print(text)
 
     def send_command(self, text, log=False):
-        text_box = self.driver.find_element_by_xpath(textbox_xpath)
+        text_box = self.driver.find_element_by_class_name('textArea-12jD-V')
+        text_box = text_box.find_element_by_xpath('./div[2]/div')
         text_box.send_keys(text)
         time.sleep(0.5)
         text_box.send_keys(Keys.ENTER)
@@ -148,7 +152,8 @@ class AutoCatcher:
             print(text)
 
     def buy_ball(self, item, amount):
-        text_box = self.driver.find_element_by_xpath(textbox_xpath)
+        text_box = self.driver.find_element_by_class_name('textArea-12jD-V')
+        text_box = text_box.find_element_by_xpath('./div[2]/div')
         text_box.send_keys("/buy")
         time.sleep(0.5)
         text_box.send_keys(Keys.ENTER)
@@ -320,12 +325,13 @@ if __name__ == '__main__':
     config = configparser.ConfigParser()
     config.read('config.ini', 'utf8')
 
-    with open('token.txt', 'r') as tokens:
-        tokens = tokens.read().splitlines()
-        print(tokens)
+    with open('token.txt', 'r') as users:
+        users = users.read().splitlines()
+        print(users)
 
-    catchers = [AutoCatcher(config, config['default']['server_url'], token) for token in tokens]
-    time.sleep(10)
-
-    for catcher in catchers:
+    for user in users[:1]:
+        name, token = user.split(':')
+        catcher = AutoCatcher(config, config['default']['server_url'], token)
+        catcher.send_message(f'{name} starts catching', True)
+        time.sleep(10)
         catcher.quit()
