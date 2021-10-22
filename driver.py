@@ -29,7 +29,7 @@ class AutoCatcher:
     def __init__(self, config, url, token=None):
         self.config = config
 
-        self.display = Display(visible=False, size=(1920, 1080))
+        self.display = Display(visible=not self.config['default']['headless'], size=(1920, 1080))
         self.display.start()
 
         options = Options()
