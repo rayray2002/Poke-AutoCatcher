@@ -36,10 +36,10 @@ class AutoCatcher:
         options.add_argument('log-level=3')
         if int(self.config['default']['headless']):
             options.add_argument('--headless')
-        options.add_argument("--window-size=1920,1080")
-        options.add_argument('--no-sandbox')
-        options.add_argument('--disable-dev-shm-usage')
-        options.add_argument("--remote-debugging-port=9222")
+        # options.add_argument("--window-size=1920,1080")
+        # options.add_argument('--no-sandbox')
+        # options.add_argument('--disable-dev-shm-usage')
+        # options.add_argument("--remote-debugging-port=9222")
 
         self.driver = webdriver.Chrome(executable_path=self.config['default']['driver_path'], options=options)
         self.driver.get(url)
