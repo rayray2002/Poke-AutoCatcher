@@ -313,6 +313,7 @@ class AutoCatcher:
         self.driver.close()
         self.driver.quit()
         self.display.stop()
+        print('quit')
 
 
 if __name__ == '__main__':
