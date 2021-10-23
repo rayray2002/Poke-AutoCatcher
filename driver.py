@@ -168,7 +168,7 @@ class AutoCatcher:
 
     def bag_check(self, timeout):
         self.try_function(self.send_command, timeout, text='/inventory')
-        time.sleep(2)
+        time.sleep(1)
         bag = self.driver.find_elements_by_class_name('embedDescription-1Cuq9a')[-1].text
         ball_order = ['Poke', 'Great', 'Ultra', 'Master']
         for ball in ball_order:
@@ -187,12 +187,12 @@ class AutoCatcher:
     def catcher(self):
         self.bag_check(60)
         self.try_function(self.send_command, 60, text='/pokestop')
-        time.sleep(3)
+        time.sleep(1)
 
         while True:
             self.try_function(self.send_command, 5, text='/pokemon')
             print('New pokemon')
-            time.sleep(1.5)
+            time.sleep(1)
 
             respond = self.driver.find_elements_by_class_name('contents-2mQqc9')[-1].text
             if 'no rolls left' in respond or 'Bot Traffic' in respond:
@@ -212,7 +212,7 @@ class AutoCatcher:
                     retry_count += 1
                     print(f'Retry {retry_count}, {e}')
 
-            time.sleep(2)
+            time.sleep(1)
 
     def find_last(self):
         text = self.driver.find_elements_by_class_name('embedDescription-1Cuq9a')[-1].text.split('\n')
