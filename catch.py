@@ -19,12 +19,14 @@ for user in users:
         catcher.send_message(f'{name} starts catching at {present.strftime("%H:%M:%S")}', True)
 
         flag = True
-        while flag:
+        count = 0
+        while flag and count <= 10:
             try:
                 catcher.catcher()
                 flag = False
             except Exception as e:
-                print(e)
+                print(f"Error when catching. Retry {count}: {e}")
+                count += 1
 
     except Exception as e:
         print(f"Error on {name}: {e}")

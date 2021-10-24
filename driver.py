@@ -112,6 +112,18 @@ class AutoCatcher:
         confirm_button.click()
         time.sleep(5)
 
+    def get_textbox(self, max_retry=5):
+        textbox = None
+        for i in range(max_retry):
+            try:
+                textbox = self.driver.find_element_by_class_name('textArea-12jD-V')
+                textbox = textbox.find_element_by_xpath('./div[2]/div')
+                textbox.click()
+            except:
+                time.sleep(0.5)
+                textbox = self.get_textbox()
+        return textbox
+
     def wait_bot(self, timeout=10):
         t = time.time()
         time.sleep(1)
@@ -128,10 +140,7 @@ class AutoCatcher:
             self.try_function(func, timeout, **kwargs)
 
     def send_message(self, text, log=False):
-        # text_box = self.driver.find_element_by_xpath(textbox_xpath)
-        text_box = self.driver.find_element_by_class_name('textArea-12jD-V')
-        text_box = text_box.find_element_by_xpath('./div[2]/div')
-        text_box.click()
+        text_box = self.get_textbox()
         text_box.send_keys(text)
         # self.action.send_keys(text).perform()
         time.sleep(0.5)
@@ -141,8 +150,7 @@ class AutoCatcher:
             print(text)
 
     def send_command(self, text, log=False):
-        text_box = self.driver.find_element_by_class_name('textArea-12jD-V')
-        text_box = text_box.find_element_by_xpath('./div[2]/div')
+        text_box = self.get_textbox()
         text_box.send_keys(text)
         time.sleep(0.5)
         text_box.send_keys(Keys.ENTER)
@@ -152,8 +160,7 @@ class AutoCatcher:
             print(text)
 
     def buy_ball(self, item, amount):
-        text_box = self.driver.find_element_by_class_name('textArea-12jD-V')
-        text_box = text_box.find_element_by_xpath('./div[2]/div')
+        text_box = self.get_textbox()
         text_box.send_keys("/buy")
         time.sleep(0.5)
         text_box.send_keys(Keys.ENTER)
