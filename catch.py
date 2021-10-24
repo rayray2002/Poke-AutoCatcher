@@ -6,7 +6,7 @@ from datetime import datetime
 config = configparser.ConfigParser()
 config.read('config.ini', 'utf8')
 
-with open('token.txt', 'r') as users:
+with open('./token.txt', 'r') as users:
     users = users.read().splitlines()
 
 for user in users:
