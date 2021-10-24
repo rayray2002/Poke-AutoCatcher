@@ -119,9 +119,10 @@ class AutoCatcher:
                 textbox = self.driver.find_element_by_class_name('textArea-12jD-V')
                 textbox = textbox.find_element_by_xpath('./div[2]/div')
                 textbox.click()
+                break
             except:
                 time.sleep(0.5)
-                textbox = self.get_textbox()
+                continue
         return textbox
 
     def wait_bot(self, timeout=10):
@@ -194,12 +195,12 @@ class AutoCatcher:
     def catcher(self):
         self.bag_check(60)
         self.try_function(self.send_command, 60, text='/pokestop')
-        time.sleep(1)
+        time.sleep(1.5)
 
         while True:
             self.try_function(self.send_command, 5, text='/pokemon')
             print('New pokemon')
-            time.sleep(1)
+            time.sleep(1.5)
 
             respond = self.driver.find_elements_by_class_name('contents-2mQqc9')[-1].text
             if 'no rolls left' in respond or 'Bot Traffic' in respond:
@@ -219,7 +220,7 @@ class AutoCatcher:
                     retry_count += 1
                     print(f'Retry {retry_count}, {e}')
 
-            time.sleep(1)
+            time.sleep(1.5)
 
     def find_last(self):
         text = self.driver.find_elements_by_class_name('embedDescription-1Cuq9a')[-1].text.split('\n')
