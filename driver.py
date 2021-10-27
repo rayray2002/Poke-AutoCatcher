@@ -185,7 +185,7 @@ class AutoCatcher:
             try:
                 current = int(match.group(1))
             except AttributeError:
-                current = 100
+                current = 0
             # print(current)
             if current < ball_amount:
                 self.buy_ball(f"{ball} Ball", ball_amount - current)
