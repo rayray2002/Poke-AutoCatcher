@@ -14,7 +14,8 @@ class AutoCatcher:
     def __init__(self, path="config.ini"):
         self.config = configparser.ConfigParser()
         self.config.read(path, "utf8")
-        self.textbox_xpath = '//*[@id="app-mount"]/div[2]/div/div[1]/div/div[2]/div/div[1]/div/div[2]/div[2]/div[2]/main/form/div/div/div/div[1]/div/div[3]/div/div[2]'
+        # self.textbox_xpath = '//*[@id="app-mount"]/div[2]/div/div[1]/div/div[2]/div/div[1]/div/div[2]/div[2]/div[2]/main/form/div/div/div/div[1]/div/div[3]/div/div[2]'
+        self.textbox_xpath = "//div[@role='textbox']"
         self.recreate_localStorage_script = """
         const iframe = document.createElement('iframe');
         document.head.append(iframe);
@@ -24,7 +25,7 @@ class AutoCatcher:
         """
 
         options = Options()
-        options.add_argument("log-level=1")
+        options.add_argument("log-level=3")
         if int(self.config["default"]["headless"]):
             options.add_argument("--headless")
         options.add_argument("--window-size=1920,1080")
@@ -59,11 +60,26 @@ class AutoCatcher:
             print("QRcode got")
 
         try:
-            WebDriverWait(self.driver, 60).until(
+            WebDriverWait(self.driver, 10).until(
                 EC.presence_of_element_located((By.XPATH, self.textbox_xpath))
             )
         except Exception as e:
-            print(e)
+            print("login failed")
+            img_xpath = "//img[@alt='Scan me!']"
+            try:
+                WebDriverWait(self.driver, 60).until(
+                    EC.presence_of_element_located((By.XPATH, img_xpath))
+                )
+            except Exception as e:
+                print(e)
+
+            self.driver.save_screenshot("login.png")
+            print("QRcode got")
+
+        WebDriverWait(self.driver, 60).until(
+                EC.presence_of_element_located((By.XPATH, self.textbox_xpath))
+            )
+        print("login")
 
         time.sleep(1)
         try:
